@@ -1,0 +1,141 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 OPR/109.0.0.0" version="24.7.14">
+  <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="zkfFHV4jXpPFQw0GAbJ--0" value="StandardSatellite" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="220" y="120" width="260" height="530" as="geometry">
+            <mxRectangle x="230" y="140" width="160" height="26" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zkfFHV4jXpPFQw0GAbJ--1" value="- id: String&#xa;- type: String&#xa;- speed: int&#xa;- maxRange: int&#xa;- supportedDevices: List&lt;String&gt;&#xa;- position: Angle&#xa;- downloadSpeed: int&#xa;- uploadSpeed: int&#xa;- storageByteLimit: int&#xa;- storeageFileLimit: int&#xa;- direction: int&#xa;- files: List&lt;File&gt;&#xa;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="zkfFHV4jXpPFQw0GAbJ--0">
+          <mxGeometry y="26" width="260" height="184" as="geometry" />
+        </mxCell>
+        <mxCell id="zkfFHV4jXpPFQw0GAbJ--4" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="zkfFHV4jXpPFQw0GAbJ--0">
+          <mxGeometry y="210" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" edge="1" parent="zkfFHV4jXpPFQw0GAbJ--0" source="zkfFHV4jXpPFQw0GAbJ--5">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="360" y="381" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="310" y="380" />
+              <mxPoint x="310" y="382" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zkfFHV4jXpPFQw0GAbJ--5" value="+ getId(): String&#xa;+ getType(): String&#xa;+ getSpeed(): int&#xa;+ getMaxRange(): int&#xa;+ getSupportedDevices(): List&lt;String&gt;&#xa;+ getPosition(): Angle&#xa;+ getDownloadSpeed(): int&#xa;+ getUploadSpeed(): int&#xa;+ getStorageByteLimit(): int&#xa;+ getStorageFileLimit(): int&#xa;+ getDirection(): int&#xa;+ getFiles(): List&lt;File&gt;&#xa;+ setDirection(direction: int): Void&#xa;&#xa;+ move(): void&#xa;&#xa;+ findSatellites(): List&lt;StandardSatellite&gt;&#xa;+ findDevices(): List&lt;Device&gt;&#xa;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="zkfFHV4jXpPFQw0GAbJ--0">
+          <mxGeometry y="230" width="260" height="278" as="geometry" />
+        </mxCell>
+        <mxCell id="whpj6HOT_S4nJf3Ds0Wu-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="whpj6HOT_S4nJf3Ds0Wu-8">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="350" y="650" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="350" y="740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="whpj6HOT_S4nJf3Ds0Wu-8" value="TeleportingSatellite" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="100" y="680" width="210" height="130" as="geometry">
+            <mxRectangle x="130" y="380" width="160" height="26" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="whpj6HOT_S4nJf3Ds0Wu-9" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="whpj6HOT_S4nJf3Ds0Wu-8">
+          <mxGeometry y="26" width="210" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-3" value="+ setPosition(position: Angle): Void" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="whpj6HOT_S4nJf3Ds0Wu-8">
+          <mxGeometry y="90" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="whpj6HOT_S4nJf3Ds0Wu-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="350" y="650" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="350" y="740" />
+            </Array>
+            <mxPoint x="420" y="740.0000000000002" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-9" value="RelaySatellite" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="420" y="680" width="190" height="130" as="geometry">
+            <mxRectangle x="130" y="380" width="160" height="26" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-10" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="-YwxLufcSqv_nBjBxwwW-9">
+          <mxGeometry y="26" width="190" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-11" value="&lt;span style=&quot;text-align: center;&quot;&gt;+ relayFile(file: File): Void&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="-YwxLufcSqv_nBjBxwwW-9">
+          <mxGeometry y="90" width="190" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-12" value="FileTransfer" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="580" y="480" width="440" height="160" as="geometry">
+            <mxRectangle x="130" y="380" width="160" height="26" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-13" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="-YwxLufcSqv_nBjBxwwW-12">
+          <mxGeometry y="26" width="440" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-14" value="+ uploadFileToDevice(file: File, destination: Device&lt;span style=&quot;background-color: initial;&quot;&gt;): boolean&lt;/span&gt;&lt;div&gt;+ uploadFileToSatellite(file: File, destination: StandardSatellite&lt;span style=&quot;background-color: initial;&quot;&gt;): boolean&lt;/span&gt;&lt;div&gt;+ downloadFileFromSatellite(file: File,&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;source: StandardSatellite&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;): boolean&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="-YwxLufcSqv_nBjBxwwW-12">
+          <mxGeometry y="90" width="440" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-17" value="BlackoutController" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="580" y="80" width="460" height="340" as="geometry">
+            <mxRectangle x="130" y="380" width="160" height="26" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-23" value="- deviceList: List&amp;lt;Device&amp;gt;&lt;br&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;- satelliteList: List&amp;lt;&lt;/span&gt;&lt;span style=&quot;text-align: center;&quot;&gt;StandardSatellite&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp;&lt;/span&gt;&amp;nbsp;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="-YwxLufcSqv_nBjBxwwW-17">
+          <mxGeometry y="26" width="460" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-18" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="-YwxLufcSqv_nBjBxwwW-17">
+          <mxGeometry y="66" width="460" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-19" value="&lt;br&gt;&lt;div&gt;+ createDevice(String deviceId, String type, Angle position): Void&lt;/div&gt;&lt;div&gt;+&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nf&quot;&gt;removeDevice&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;n&quot;&gt;deviceId&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;): Void&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;&lt;div&gt;+&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nf&quot;&gt;createSatellite&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;n&quot;&gt;satelliteId&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;n&quot;&gt;type&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;,&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nc&quot;&gt;Angle&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;n&quot;&gt;position&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;): Void&lt;/span&gt;&lt;/div&gt;&lt;div&gt;+&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;removeSatellite(String satelliteId): Void&lt;/span&gt;&lt;/div&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;+ listDeviceIds():&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;List&amp;lt;String&amp;gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;+ listSatelliteIds():&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;List&amp;lt;String&amp;gt;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;+&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nf&quot;&gt;addFileToDevice&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;n&quot;&gt;deviceId&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;n&quot;&gt;content&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;): Void&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nf&quot;&gt;getInfo&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;):&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;EntityInfoResponse&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="-YwxLufcSqv_nBjBxwwW-17">
+          <mxGeometry y="130" width="460" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="-YwxLufcSqv_nBjBxwwW-17" target="-YwxLufcSqv_nBjBxwwW-25">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="810" y="70" as="sourcePoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-25" value="EntityInfoResponse" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="580" y="-210" width="460" height="170" as="geometry">
+            <mxRectangle x="130" y="380" width="160" height="26" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-26" value="- id: String&lt;div&gt;- position: Angle&lt;/div&gt;&lt;div&gt;- height: double&lt;/div&gt;&lt;div&gt;- type: String&lt;/div&gt;&lt;div&gt;- files:&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nc&quot;&gt;Map&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;nc&quot;&gt;FileInfoResponse&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot; class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="-YwxLufcSqv_nBjBxwwW-25">
+          <mxGeometry y="26" width="460" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-27" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="-YwxLufcSqv_nBjBxwwW-25">
+          <mxGeometry y="116" width="460" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-32" value="Device" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="1100" y="220" width="260" height="192" as="geometry">
+            <mxRectangle x="230" y="140" width="160" height="26" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-34" value="- type: String&#xa;- maxRange: int&#xa;- files: List&lt;File&gt;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="-YwxLufcSqv_nBjBxwwW-32">
+          <mxGeometry y="26" width="260" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-35" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="-YwxLufcSqv_nBjBxwwW-32">
+          <mxGeometry y="110" width="260" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-38" value="&lt;div style=&quot;&quot;&gt;+ getType(): String&lt;br style=&quot;padding: 0px; margin: 0px;&quot;&gt;+ getMaxRange(): int&lt;br style=&quot;padding: 0px; margin: 0px;&quot;&gt;+ getFiles():&amp;nbsp;List&amp;lt;File&amp;gt;&lt;span style=&quot;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;span style=&quot;&quot;&gt;+ findSatellites(): List&amp;lt;StandardSatellite&amp;gt;&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="-YwxLufcSqv_nBjBxwwW-32">
+          <mxGeometry y="122" width="260" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.405;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=open;endFill=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="-YwxLufcSqv_nBjBxwwW-19" target="-YwxLufcSqv_nBjBxwwW-34">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.728;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=open;endFill=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="-YwxLufcSqv_nBjBxwwW-19" target="zkfFHV4jXpPFQw0GAbJ--1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-YwxLufcSqv_nBjBxwwW-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=open;endFill=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="-YwxLufcSqv_nBjBxwwW-38" target="-YwxLufcSqv_nBjBxwwW-12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1190" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
