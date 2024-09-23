@@ -2,22 +2,13 @@ package unsw.entities;
 
 import unsw.utils.Angle;
 
-import java.util.ArrayList;
-import java.util.List;
+import static unsw.utils.MathsHelper.RADIUS_OF_JUPITER;
 
-import java.io.File;
-
-public class Device {
-    private String id;
-    private String type;
-    private Angle position;
+public class Device extends Entity {
     private int maxRange;
-    private List<File> files = new ArrayList<>();
 
     public Device(String deviceId, String type, Angle position) {
-        this.id = deviceId;
-        this.type = type;
-        this.position = position;
+        super(deviceId, position, RADIUS_OF_JUPITER, type);
 
         if (type == "HandheldDevice") {
             maxRange = 50000;
@@ -28,23 +19,7 @@ public class Device {
         }
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public Angle getPosition() {
-        return position;
-    }
-
     public int getMaxRange() {
         return maxRange;
-    }
-
-    public List<File> getFiles() {
-        return files;
     }
 }

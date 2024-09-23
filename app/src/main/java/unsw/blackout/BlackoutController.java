@@ -1,15 +1,12 @@
 package unsw.blackout;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import unsw.entities.*;
 import unsw.response.models.EntityInfoResponse;
+import unsw.response.models.FileInfoResponse;
 import unsw.utils.Angle;
-
-import java.io.FileWriter;
-import java.io.IOException;
 
 /**
  * The controller for the Blackout system.
@@ -21,7 +18,7 @@ public class BlackoutController {
     private List<Device> deviceList = new ArrayList<>();
     private List<StandardSatellite> satelliteList = new ArrayList<>();
 
-    private Object findEntity(String id) {
+    private Entity findEntity(String id) {
         for (Device device : deviceList) {
             if (device.getId() == id) {
                 return device;
@@ -99,40 +96,20 @@ public class BlackoutController {
 
     public void addFileToDevice(String deviceId, String filename, String content) {
         Device device = findDevice(deviceId);
-
-        File file = new File(filename);
-        try {
-            FileWriter myWriter = new FileWriter(filename);
-            myWriter.write(content);
-            myWriter.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-
-        device.getFiles().add(file);
+        FileInfoResponse info = new FileInfoResponse(filename, content, content.length(), true);
+        device.getFiles().put(filename, info);
     }
 
     public EntityInfoResponse getInfo(String id) {
-        Object entity = findEntity(id);
+        Entity entity = findEntity(id);
 
         if (entity == null) {
             return null;
         } else {
-            if (entity instanceof Device) {
-                Device device = (Device) entity;
-                int deviceHeight = 0;
-                EntityInfoResponse deviceInfo = new EntityInfoResponse(device.getId(), device.getPosition(),
-                        deviceHeight, device.getType());
-                return deviceInfo;
-            } else if (entity instanceof StandardSatellite) {
-                StandardSatellite satellite = (StandardSatellite) entity;
-                EntityInfoResponse satelliteInfo = new EntityInfoResponse(satellite.getId(), satellite.getPosition(),
-                        satellite.getHeight(), satellite.getType());
-                return satelliteInfo;
-            }
+            EntityInfoResponse info = new EntityInfoResponse(entity.getId(), entity.getPosition(), entity.getHeight(),
+                    entity.getType(), entity.getFiles());
+            return info;
         }
-        return null;
     }
 
     public void simulate() {
