@@ -1,53 +1,52 @@
 package blackout;
 
-// import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-// import unsw.blackout.BlackoutController;
-// import unsw.blackout.FileTransferException;
-// import unsw.response.models.FileInfoResponse;
-// import unsw.response.models.EntityInfoResponse;
-// import unsw.utils.Angle;
+import unsw.blackout.BlackoutController;
+import unsw.blackout.FileTransferException;
+import unsw.response.models.FileInfoResponse;
+import unsw.response.models.EntityInfoResponse;
+import unsw.utils.Angle;
 
-// import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-// import static org.junit.jupiter.api.Assertions.assertEquals;
-// import static org.junit.jupiter.api.Assertions.assertThrows;
-// import static org.junit.jupiter.api.Assertions.assertTrue;
-// import static unsw.utils.MathsHelper.RADIUS_OF_JUPITER;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static unsw.utils.MathsHelper.RADIUS_OF_JUPITER;
 
-// import java.util.Arrays;
+import java.util.Arrays;
 
-// import static blackout.TestHelpers.assertListAreEqualIgnoringOrder;
+import static blackout.TestHelpers.assertListAreEqualIgnoringOrder;
 
 @TestInstance(value = Lifecycle.PER_CLASS)
 public class Task2ExampleTests {
     // Uncomment out the tests once you have completed each task.
+    @Test
+    public void testEntitiesInRange() {
+        // Task 2
+        // Example from the specification
+        BlackoutController controller = new BlackoutController();
 
-    // @Test
-    // public void testEntitiesInRange() {
-    //     // Task 2
-    //     // Example from the specification
-    //     BlackoutController controller = new BlackoutController();
+        // Creates 1 satellite and 2 devices
+        // Gets a device to send a file to a satellites and gets another device to download it.
+        // StandardSatellites are slow and transfer 1 byte per minute.
+        controller.createSatellite("Satellite1", "StandardSatellite", 1000 + RADIUS_OF_JUPITER, Angle.fromDegrees(320));
+        controller.createSatellite("Satellite2", "StandardSatellite", 1000 + RADIUS_OF_JUPITER, Angle.fromDegrees(315));
+        controller.createDevice("DeviceB", "LaptopDevice", Angle.fromDegrees(310));
+        controller.createDevice("DeviceC", "HandheldDevice", Angle.fromDegrees(320));
+        controller.createDevice("DeviceD", "HandheldDevice", Angle.fromDegrees(180));
+        controller.createSatellite("Satellite3", "StandardSatellite", 2000 + RADIUS_OF_JUPITER, Angle.fromDegrees(175));
 
-    //     // Creates 1 satellite and 2 devices
-    //     // Gets a device to send a file to a satellites and gets another device to download it.
-    //     // StandardSatellites are slow and transfer 1 byte per minute.
-    //     controller.createSatellite("Satellite1", "StandardSatellite", 1000 + RADIUS_OF_JUPITER, Angle.fromDegrees(320));
-    //     controller.createSatellite("Satellite2", "StandardSatellite", 1000 + RADIUS_OF_JUPITER, Angle.fromDegrees(315));
-    //     controller.createDevice("DeviceB", "LaptopDevice", Angle.fromDegrees(310));
-    //     controller.createDevice("DeviceC", "HandheldDevice", Angle.fromDegrees(320));
-    //     controller.createDevice("DeviceD", "HandheldDevice", Angle.fromDegrees(180));
-    //     controller.createSatellite("Satellite3", "StandardSatellite", 2000 + RADIUS_OF_JUPITER, Angle.fromDegrees(175));
+        assertListAreEqualIgnoringOrder(Arrays.asList("DeviceC", "Satellite2"),
+                controller.communicableEntitiesInRange("Satellite1"));
+        assertListAreEqualIgnoringOrder(Arrays.asList("DeviceB", "DeviceC", "Satellite1"),
+                controller.communicableEntitiesInRange("Satellite2"));
+        assertListAreEqualIgnoringOrder(Arrays.asList("Satellite2"), controller.communicableEntitiesInRange("DeviceB"));
 
-    //     assertListAreEqualIgnoringOrder(Arrays.asList("DeviceC", "Satellite2"),
-    //             controller.communicableEntitiesInRange("Satellite1"));
-    //     assertListAreEqualIgnoringOrder(Arrays.asList("DeviceB", "DeviceC", "Satellite1"),
-    //             controller.communicableEntitiesInRange("Satellite2"));
-    //     assertListAreEqualIgnoringOrder(Arrays.asList("Satellite2"), controller.communicableEntitiesInRange("DeviceB"));
-
-    //     assertListAreEqualIgnoringOrder(Arrays.asList("DeviceD"), controller.communicableEntitiesInRange("Satellite3"));
-    // }
+        assertListAreEqualIgnoringOrder(Arrays.asList("DeviceD"), controller.communicableEntitiesInRange("Satellite3"));
+    }
 
     // @Test
     // public void testSomeExceptionsForSend() {

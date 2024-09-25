@@ -1,5 +1,30 @@
 package blackout;
 
+import unsw.blackout.BlackoutController;
+import unsw.utils.Angle;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+
+import unsw.response.models.EntityInfoResponse;
+import unsw.response.models.FileInfoResponse;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static blackout.TestHelpers.assertListAreEqualIgnoringOrder;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static unsw.utils.MathsHelper.RADIUS_OF_JUPITER;
+
 public class MyTests {
-    // TODO: Add your own tests here
+    public static void main(String[] args) {
+        BlackoutController controller = new BlackoutController();
+
+        controller.createSatellite("Satellite1", "StandardSatellite", 100 + RADIUS_OF_JUPITER, Angle.fromDegrees(340));
+
+        controller.simulate(5);
+    }
 }

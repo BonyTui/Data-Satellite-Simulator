@@ -49,7 +49,7 @@ public class Task1ExampleTests {
     }
 
     @Test
-    public void testDelete() {
+    public void testDeleteAll() {
         // Task 1
         BlackoutController controller = new BlackoutController();
 
@@ -69,6 +69,42 @@ public class Task1ExampleTests {
 
         assertListAreEqualIgnoringOrder(Arrays.asList(), controller.listSatelliteIds());
         assertListAreEqualIgnoringOrder(Arrays.asList(), controller.listDeviceIds());
+    }
+
+    @Test
+    public void testDeleteSomeDevice() {
+        // Task 1
+        BlackoutController controller = new BlackoutController();
+
+        controller.createDevice("DeviceA", "HandheldDevice", Angle.fromDegrees(30));
+        controller.createDevice("DeviceB", "LaptopDevice", Angle.fromDegrees(180));
+        controller.createDevice("DeviceC", "DesktopDevice", Angle.fromDegrees(330));
+
+        assertListAreEqualIgnoringOrder(Arrays.asList("DeviceA", "DeviceB", "DeviceC"), controller.listDeviceIds());
+
+        controller.removeDevice("DeviceA");
+        controller.removeDevice("DeviceC");
+
+        assertListAreEqualIgnoringOrder(Arrays.asList("DeviceB"), controller.listDeviceIds());
+    }
+
+    @Test
+    public void testDeleteSomeSatellite() {
+        // Task 1
+        BlackoutController controller = new BlackoutController();
+
+        controller.createSatellite("Satellite1", "StandardSatellite", 100 + RADIUS_OF_JUPITER, Angle.fromDegrees(340));
+        controller.createSatellite("Satellite2", "StandardSatellite", 100 + RADIUS_OF_JUPITER, Angle.fromDegrees(300));
+        controller.createSatellite("Satellite3", "StandardSatellite", 100 + RADIUS_OF_JUPITER, Angle.fromDegrees(240));
+        controller.createSatellite("Satellite4", "StandardSatellite", 100 + RADIUS_OF_JUPITER, Angle.fromDegrees(140));
+
+        assertListAreEqualIgnoringOrder(Arrays.asList("Satellite1", "Satellite2", "Satellite3", "Satellite4"),
+                controller.listSatelliteIds());
+
+        controller.removeSatellite("Satellite2");
+        controller.removeSatellite("Satellite4");
+
+        assertListAreEqualIgnoringOrder(Arrays.asList("Satellite1", "Satellite3"), controller.listSatelliteIds());
     }
 
     @Test

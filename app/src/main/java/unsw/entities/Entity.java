@@ -39,4 +39,8 @@ public class Entity {
     public Map<String, FileInfoResponse> getFiles() {
         return files;
     }
+
+    public void setPosition(Angle position) {
+        this.position = position;
+    }
 }
