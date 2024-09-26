@@ -7,6 +7,7 @@ import unsw.entities.*;
 import unsw.response.models.EntityInfoResponse;
 import unsw.response.models.FileInfoResponse;
 import unsw.utils.Angle;
+import unsw.utils.MathsHelper;
 
 /**
  * The controller for the Blackout system.
@@ -128,13 +129,68 @@ public class BlackoutController {
         }
     }
 
+    private List<String> communicableSatellitesInRangeOfDevice(Entity entity) {
+        List<String> communicableSatellites = new ArrayList<>();
+        for (StandardSatellite satellite : satelliteList) {
+            double distance = MathsHelper.getDistance(satellite.getHeight(), satellite.getPosition(),
+                    entity.getPosition());
+            if (((distance <= entity.getMaxRange()) || (distance <= satellite.getMaxRange()))
+                    && MathsHelper.isVisible(satellite.getHeight(), satellite.getPosition(), entity.getPosition())
+                    && satellite.getId() != entity.getId()) {
+                communicableSatellites.add(satellite.getId());
+            }
+        }
+        return communicableSatellites;
+    }
+
+    private List<String> communicableSatellitesInRangeOfSatellite(Entity entity) {
+        List<String> communicableSatellites = new ArrayList<>();
+        for (StandardSatellite satellite : satelliteList) {
+            double distance = MathsHelper.getDistance(satellite.getHeight(), satellite.getPosition(),
+                    entity.getHeight(), entity.getPosition());
+            if (((distance <= entity.getMaxRange()) || (distance <= satellite.getMaxRange())) && MathsHelper
+                    .isVisible(satellite.getHeight(), satellite.getPosition(), entity.getHeight(), entity.getPosition())
+                    && satellite.getId() != entity.getId()) {
+                communicableSatellites.add(satellite.getId());
+            }
+        }
+        return communicableSatellites;
+    }
+
+    private List<String> communicableDeviceInRange(Entity entity) {
+        List<String> communicableDevices = new ArrayList<>();
+        for (Device device : deviceList) {
+            double distance = MathsHelper.getDistance(entity.getHeight(), entity.getPosition(), device.getPosition());
+            if (((distance <= entity.getMaxRange()) || (distance <= device.getMaxRange()))
+                    && MathsHelper.isVisible(entity.getHeight(), entity.getPosition(), device.getPosition())
+                    && device.getId() != entity.getId()) {
+                communicableDevices.add(device.getId());
+            }
+        }
+        return communicableDevices;
+    }
+
     public List<String> communicableEntitiesInRange(String id) {
-        // TODO: Task 2 b)
-        return new ArrayList<>();
+        List<String> communicableEntities = new ArrayList<>();
+        Entity entity = findEntity(id);
+
+        if (entity.getClass() == Device.class) {
+            for (String satelliteId : communicableSatellitesInRangeOfDevice(entity)) {
+                communicableEntities.add(satelliteId);
+            }
+        } else if (entity.getClass() == StandardSatellite.class) {
+            for (String satelliteId : communicableSatellitesInRangeOfSatellite(entity)) {
+                communicableEntities.add(satelliteId);
+            }
+            for (String deviceId : communicableDeviceInRange(entity)) {
+                communicableEntities.add(deviceId);
+            }
+        }
+        return communicableEntities;
     }
 
     public void sendFile(String fileName, String fromId, String toId) throws FileTransferException {
-        // TODO: Task 2 c)
+
     }
 
     public void createDevice(String deviceId, String type, Angle position, boolean isMoving) {

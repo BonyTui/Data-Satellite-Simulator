@@ -23,8 +23,13 @@ public class MyTests {
     public static void main(String[] args) {
         BlackoutController controller = new BlackoutController();
 
-        controller.createSatellite("Satellite1", "StandardSatellite", 100 + RADIUS_OF_JUPITER, Angle.fromDegrees(340));
+        controller.createSatellite("Satellite1", "StandardSatellite", 1000 + RADIUS_OF_JUPITER, Angle.fromDegrees(320));
+        controller.createSatellite("Satellite2", "StandardSatellite", 1000 + RADIUS_OF_JUPITER, Angle.fromDegrees(315));
+        controller.createDevice("DeviceB", "LaptopDevice", Angle.fromDegrees(310));
+        controller.createDevice("DeviceC", "HandheldDevice", Angle.fromDegrees(320));
+        controller.createDevice("DeviceD", "HandheldDevice", Angle.fromDegrees(180));
+        controller.createSatellite("Satellite3", "StandardSatellite", 2000 + RADIUS_OF_JUPITER, Angle.fromDegrees(175));
 
-        controller.simulate(5);
+        System.out.println(controller.communicableEntitiesInRange("Satellite2"));
     }
 }

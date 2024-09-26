@@ -11,6 +11,7 @@ public class Entity {
     private Angle position;
     private double height;
     private String type;
+    private int maxRange;
     private Map<String, FileInfoResponse> files = new HashMap<String, FileInfoResponse>();
 
     public Entity(String id, Angle position, double height, String type) {
@@ -36,11 +37,19 @@ public class Entity {
         return height;
     }
 
+    public int getMaxRange() {
+        return maxRange;
+    }
+
     public Map<String, FileInfoResponse> getFiles() {
         return files;
     }
 
     public void setPosition(Angle position) {
         this.position = position;
+    }
+
+    public void setMaxRange(int maxRange) {
+        this.maxRange = maxRange;
     }
 }
