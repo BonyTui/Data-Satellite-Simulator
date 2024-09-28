@@ -8,9 +8,7 @@ import java.util.Map;
 import org.reflections.vfs.Vfs.File;
 
 import unsw.blackout.FileTransferException.*;
-import unsw.entities.Device;
-import unsw.entities.Entity;
-import unsw.entities.StandardSatellite;
+import unsw.entities.*;
 import unsw.response.models.EntityInfoResponse;
 import unsw.response.models.FileInfoResponse;
 import unsw.utils.Angle;
@@ -73,8 +71,17 @@ public class BlackoutController {
     }
 
     public void createSatellite(String satelliteId, String type, double height, Angle position) {
-        StandardSatellite satellite = new StandardSatellite(satelliteId, type, height, position);
+        StandardSatellite satellite = null;
+        final double linearVelocity;
+        if (type.equals("StandardSatellite")) {
+            linearVelocity = 2500;
+            satellite = new StandardSatellite(satelliteId, type, height, position, 2500);
+        } else if (type.equals("RelaySatellite")) {
+            linearVelocity = 1500;
+            satellite = new RelaySatellite(satelliteId, type, height, position, linearVelocity);
+        }
         satelliteList.add(satellite);
+
     }
 
     public void removeSatellite(String satelliteId) {
@@ -225,13 +232,17 @@ public class BlackoutController {
         Entity destinationEntity = findEntity(toId);
         FileInfoResponse sourceFile = sourceEntity.getFiles().get(fileName);
 
-        if (sourceFile == null) {
+        if (sourceFile == null || !sourceFile.isFileComplete()) {
             // Can't find file to send from source
             throw new VirtualFileNotFoundException(fileName);
         } else if (destinationEntity.getFiles().get(fileName) != null) {
             // File already exist at destination
             throw new VirtualFileAlreadyExistsException(fileName);
         }
+
+        // else if (sourceEntity.getUploadSpeed()) {
+
+        // }
 
         // Begin the transfer
         FileInfoResponse destinationFile = new FileInfoResponse(fileName, "", sourceFile.getFileSize(), false);

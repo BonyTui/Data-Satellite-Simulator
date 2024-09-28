@@ -3,11 +3,9 @@ package unsw.entities;
 import unsw.utils.Angle;
 
 public class StandardSatellite extends Entity {
-    private final double linearVelocity = 2500;
-    private final double angularVelocity = linearVelocity / this.getHeight();
+    public StandardSatellite(String satelliteId, String type, double height, Angle position, double linearVelocity) {
+        super(satelliteId, position, height, type, linearVelocity);
 
-    public StandardSatellite(String satelliteId, String type, double height, Angle position) {
-        super(satelliteId, position, height, type);
         if (type == "StandardSatellite") {
             setMaxRange(150000);
         } else if (type == "TeleportingSatellite") {
@@ -15,11 +13,5 @@ public class StandardSatellite extends Entity {
         } else if (type == "RelaySatellite") {
             setMaxRange(300000);
         }
-    }
-
-    public void move() {
-        Angle currentPosition = this.getPosition();
-        Angle newPosition = currentPosition.subtract(Angle.fromRadians(angularVelocity));
-        this.setPosition(newPosition);
     }
 }

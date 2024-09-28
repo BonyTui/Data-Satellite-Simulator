@@ -25,24 +25,6 @@ import static unsw.utils.MathsHelper.RADIUS_OF_JUPITER;
 public class MyTests {
     public static void main(String[] args) {
         BlackoutController controller = new BlackoutController();
-
-        // Creates 1 satellite and 2 devices
-        // Gets a device to send a file to a satellites and gets another device to download it.
-        // StandardSatellites are slow and transfer 1 byte per minute.
-        controller.createSatellite("Satellite1", "StandardSatellite", 5000 + RADIUS_OF_JUPITER, Angle.fromDegrees(320));
-        controller.createDevice("DeviceB", "LaptopDevice", Angle.fromDegrees(310));
-        controller.createDevice("DeviceC", "HandheldDevice", Angle.fromDegrees(320));
-
-        String msg = "Hey";
-        controller.addFileToDevice("DeviceC", "FileAlpha", msg);
-
-        assertDoesNotThrow(() -> controller.sendFile("FileAlpha", "DeviceC", "Satellite1"));
-
-        System.out.println(controller.getInfo("Satellite1"));
-        System.out.println();
-
-        controller.simulate(3);
-
-        System.out.println(controller.getInfo("Satellite1"));
+        controller.createSatellite("Satellite1", "RelaySatellite", 100 + RADIUS_OF_JUPITER, Angle.fromDegrees(180));
     }
 }

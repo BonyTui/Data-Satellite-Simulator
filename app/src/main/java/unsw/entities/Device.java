@@ -6,7 +6,7 @@ import static unsw.utils.MathsHelper.RADIUS_OF_JUPITER;
 
 public class Device extends Entity {
     public Device(String deviceId, String type, Angle position) {
-        super(deviceId, position, RADIUS_OF_JUPITER, type);
+        super(deviceId, position, RADIUS_OF_JUPITER, type, 0);
 
         if (type == "HandheldDevice") {
             setMaxRange(50000);

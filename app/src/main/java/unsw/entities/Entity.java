@@ -12,13 +12,20 @@ public class Entity {
     private double height;
     private String type;
     private int maxRange;
+    private double linearVelocity;
+    private double angularVelocity;
+    private int direction = 1;
+    private int downloadSpeed;
+    private int uploadSpeed;
     private Map<String, FileInfoResponse> files = new HashMap<String, FileInfoResponse>();
 
-    public Entity(String id, Angle position, double height, String type) {
+    public Entity(String id, Angle position, double height, String type, double linearVelocity) {
         this.id = id;
         this.position = position;
         this.height = height;
         this.type = type;
+        this.linearVelocity = linearVelocity;
+        this.angularVelocity = linearVelocity / height;
     }
 
     public String getId() {
@@ -31,6 +38,26 @@ public class Entity {
 
     public Angle getPosition() {
         return position;
+    }
+
+    public double getLinearVelocity() {
+        return linearVelocity;
+    }
+
+    public double getAngularVelocity() {
+        return angularVelocity;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public int getDownloadSpeed() {
+        return downloadSpeed;
+    }
+
+    public int getUploadSpeed() {
+        return uploadSpeed;
     }
 
     public double getHeight() {
@@ -49,7 +76,17 @@ public class Entity {
         this.position = position;
     }
 
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+
     public void setMaxRange(int maxRange) {
         this.maxRange = maxRange;
+    }
+
+    public void move() {
+        Angle currentPosition = this.getPosition();
+        Angle newPosition = currentPosition.subtract(Angle.fromRadians(this.getAngularVelocity()));
+        this.setPosition(newPosition);
     }
 }

@@ -90,87 +90,87 @@ public class Task2ExampleTests {
                 "StandardSatellite"), controller.getInfo("Satellite1"));
     }
 
-    // @Test
-    // public void testExample() {
-    //     // Task 2
-    //     // Example from the specification
-    //     BlackoutController controller = new BlackoutController();
+    @Test
+    public void testExample() {
+        // Task 2
+        // Example from the specification
+        BlackoutController controller = new BlackoutController();
 
-    //     // Creates 1 satellite and 2 devices
-    //     // Gets a device to send a file to a satellites and gets another device to download it.
-    //     // StandardSatellites are slow and transfer 1 byte per minute.
-    //     controller.createSatellite("Satellite1", "StandardSatellite", 10000 + RADIUS_OF_JUPITER,
-    //             Angle.fromDegrees(320));
-    //     controller.createDevice("DeviceB", "LaptopDevice", Angle.fromDegrees(310));
-    //     controller.createDevice("DeviceC", "HandheldDevice", Angle.fromDegrees(320));
+        // Creates 1 satellite and 2 devices
+        // Gets a device to send a file to a satellites and gets another device to download it.
+        // StandardSatellites are slow and transfer 1 byte per minute.
+        controller.createSatellite("Satellite1", "StandardSatellite", 10000 + RADIUS_OF_JUPITER,
+                Angle.fromDegrees(320));
+        controller.createDevice("DeviceB", "LaptopDevice", Angle.fromDegrees(310));
+        controller.createDevice("DeviceC", "HandheldDevice", Angle.fromDegrees(320));
 
-    //     String msg = "Hey";
-    //     controller.addFileToDevice("DeviceC", "FileAlpha", msg);
-    //     assertDoesNotThrow(() -> controller.sendFile("FileAlpha", "DeviceC", "Satellite1"));
-    //     assertEquals(new FileInfoResponse("FileAlpha", "", msg.length(), false),
-    //             controller.getInfo("Satellite1").getFiles().get("FileAlpha"));
+        String msg = "Hey";
+        controller.addFileToDevice("DeviceC", "FileAlpha", msg);
+        assertDoesNotThrow(() -> controller.sendFile("FileAlpha", "DeviceC", "Satellite1"));
+        assertEquals(new FileInfoResponse("FileAlpha", "", msg.length(), false),
+                controller.getInfo("Satellite1").getFiles().get("FileAlpha"));
 
-    //     controller.simulate(msg.length() * 2);
-    //     assertEquals(new FileInfoResponse("FileAlpha", msg, msg.length(), true),
-    //             controller.getInfo("Satellite1").getFiles().get("FileAlpha"));
+        controller.simulate(msg.length() * 2);
+        assertEquals(new FileInfoResponse("FileAlpha", msg, msg.length(), true),
+                controller.getInfo("Satellite1").getFiles().get("FileAlpha"));
 
-    //     assertDoesNotThrow(() -> controller.sendFile("FileAlpha", "Satellite1", "DeviceB"));
-    //     assertEquals(new FileInfoResponse("FileAlpha", "", msg.length(), false),
-    //             controller.getInfo("DeviceB").getFiles().get("FileAlpha"));
+        assertDoesNotThrow(() -> controller.sendFile("FileAlpha", "Satellite1", "DeviceB"));
+        assertEquals(new FileInfoResponse("FileAlpha", "", msg.length(), false),
+                controller.getInfo("DeviceB").getFiles().get("FileAlpha"));
 
-    //     controller.simulate(msg.length());
-    //     assertEquals(new FileInfoResponse("FileAlpha", msg, msg.length(), true),
-    //             controller.getInfo("DeviceB").getFiles().get("FileAlpha"));
+        controller.simulate(msg.length());
+        assertEquals(new FileInfoResponse("FileAlpha", msg, msg.length(), true),
+                controller.getInfo("DeviceB").getFiles().get("FileAlpha"));
 
-    //     // Hints for further testing:
-    //     // - What about checking about the progress of the message half way through?
-    //     // - Device/s get out of range of satellite
-    //     // ... and so on.
-    // }
+        // Hints for further testing:
+        // - What about checking about the progress of the message half way through?
+        // - Device/s get out of range of satellite
+        // ... and so on.
+    }
 
-    // @Test
-    // public void testRelayMovement() {
-    //     // Task 2
-    //     // Example from the specification
-    //     BlackoutController controller = new BlackoutController();
+    @Test
+    public void testRelayMovement() {
+        // Task 2
+        // Example from the specification
+        BlackoutController controller = new BlackoutController();
 
-    //     // Creates 1 satellite and 2 devices
-    //     // Gets a device to send a file to a satellites and gets another device to download it.
-    //     // StandardSatellites are slow and transfer 1 byte per minute.
-    //     controller.createSatellite("Satellite1", "RelaySatellite", 100 + RADIUS_OF_JUPITER, Angle.fromDegrees(180));
+        // Creates 1 satellite and 2 devices
+        // Gets a device to send a file to a satellites and gets another device to download it.
+        // StandardSatellites are slow and transfer 1 byte per minute.
+        controller.createSatellite("Satellite1", "RelaySatellite", 100 + RADIUS_OF_JUPITER, Angle.fromDegrees(180));
 
-    //     // moves in negative direction
-    //     assertEquals(
-    //             new EntityInfoResponse("Satellite1", Angle.fromDegrees(180), 100 + RADIUS_OF_JUPITER, "RelaySatellite"),
-    //             controller.getInfo("Satellite1"));
-    //     controller.simulate();
-    //     assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(178.77), 100 + RADIUS_OF_JUPITER,
-    //             "RelaySatellite"), controller.getInfo("Satellite1"));
-    //     controller.simulate();
-    //     assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(177.54), 100 + RADIUS_OF_JUPITER,
-    //             "RelaySatellite"), controller.getInfo("Satellite1"));
-    //     controller.simulate();
-    //     assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(176.31), 100 + RADIUS_OF_JUPITER,
-    //             "RelaySatellite"), controller.getInfo("Satellite1"));
+        // moves in negative direction
+        assertEquals(
+                new EntityInfoResponse("Satellite1", Angle.fromDegrees(180), 100 + RADIUS_OF_JUPITER, "RelaySatellite"),
+                controller.getInfo("Satellite1"));
+        controller.simulate();
+        assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(178.77), 100 + RADIUS_OF_JUPITER,
+                "RelaySatellite"), controller.getInfo("Satellite1"));
+        controller.simulate();
+        assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(177.54), 100 + RADIUS_OF_JUPITER,
+                "RelaySatellite"), controller.getInfo("Satellite1"));
+        controller.simulate();
+        assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(176.31), 100 + RADIUS_OF_JUPITER,
+                "RelaySatellite"), controller.getInfo("Satellite1"));
 
-    //     controller.simulate(5);
-    //     assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(170.18), 100 + RADIUS_OF_JUPITER,
-    //             "RelaySatellite"), controller.getInfo("Satellite1"));
-    //     controller.simulate(24);
-    //     assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(140.72), 100 + RADIUS_OF_JUPITER,
-    //             "RelaySatellite"), controller.getInfo("Satellite1"));
-    //     // edge case
-    //     controller.simulate();
-    //     assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(139.49), 100 + RADIUS_OF_JUPITER,
-    //             "RelaySatellite"), controller.getInfo("Satellite1"));
-    //     // coming back
-    //     controller.simulate(1);
-    //     assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(140.72), 100 + RADIUS_OF_JUPITER,
-    //             "RelaySatellite"), controller.getInfo("Satellite1"));
-    //     controller.simulate(5);
-    //     assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(146.85), 100 + RADIUS_OF_JUPITER,
-    //             "RelaySatellite"), controller.getInfo("Satellite1"));
-    // }
+        controller.simulate(5);
+        assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(170.18), 100 + RADIUS_OF_JUPITER,
+                "RelaySatellite"), controller.getInfo("Satellite1"));
+        controller.simulate(24);
+        assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(140.72), 100 + RADIUS_OF_JUPITER,
+                "RelaySatellite"), controller.getInfo("Satellite1"));
+        // edge case
+        controller.simulate();
+        assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(139.49), 100 + RADIUS_OF_JUPITER,
+                "RelaySatellite"), controller.getInfo("Satellite1"));
+        // coming back
+        controller.simulate(1);
+        assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(140.72), 100 + RADIUS_OF_JUPITER,
+                "RelaySatellite"), controller.getInfo("Satellite1"));
+        controller.simulate(5);
+        assertEquals(new EntityInfoResponse("Satellite1", Angle.fromDegrees(146.85), 100 + RADIUS_OF_JUPITER,
+                "RelaySatellite"), controller.getInfo("Satellite1"));
+    }
 
     // @Test
     // public void testTeleportingMovement() {
