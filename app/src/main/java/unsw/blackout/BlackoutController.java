@@ -1,9 +1,16 @@
 package unsw.blackout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import unsw.entities.*;
+import org.reflections.vfs.Vfs.File;
+
+import unsw.blackout.FileTransferException.*;
+import unsw.entities.Device;
+import unsw.entities.Entity;
+import unsw.entities.StandardSatellite;
 import unsw.response.models.EntityInfoResponse;
 import unsw.response.models.FileInfoResponse;
 import unsw.utils.Angle;
@@ -18,6 +25,7 @@ import unsw.utils.MathsHelper;
 public class BlackoutController {
     private List<Device> deviceList = new ArrayList<>();
     private List<StandardSatellite> satelliteList = new ArrayList<>();
+    private List<FileTransfer> fileTransferList = new ArrayList<FileTransfer>();
 
     private Entity findEntity(String id) {
         for (Device device : deviceList) {
@@ -117,6 +125,29 @@ public class BlackoutController {
         for (StandardSatellite satellite : satelliteList) {
             satellite.move();
         }
+
+        List<FileTransfer> completeTransfer = new ArrayList<FileTransfer>();
+        for (FileTransfer fileTransfer : fileTransferList) {
+            String fileName = fileTransfer.getFileName();
+            int numByteTransferred = fileTransfer.getByteTransferred() + 1;
+            String sourceData = fileTransfer.getFileContent();
+            String transferredData = sourceData.substring(0, numByteTransferred);
+            boolean isFileComplete = false;
+
+            fileTransfer.setByteTransferred(numByteTransferred);
+
+            // Check if file is completely transferred
+            if (transferredData.length() == sourceData.length()) {
+                isFileComplete = true;
+                completeTransfer.add(fileTransfer);
+            }
+
+            FileInfoResponse updatedFile = new FileInfoResponse(fileName, transferredData, sourceData.length(),
+                    isFileComplete);
+            fileTransfer.getDestinationFileStorage().put(fileName, updatedFile);
+
+        }
+        fileTransferList.removeAll(completeTransfer);
     }
 
     /**
@@ -190,7 +221,26 @@ public class BlackoutController {
     }
 
     public void sendFile(String fileName, String fromId, String toId) throws FileTransferException {
+        Entity sourceEntity = findEntity(fromId);
+        Entity destinationEntity = findEntity(toId);
+        FileInfoResponse sourceFile = sourceEntity.getFiles().get(fileName);
 
+        if (sourceFile == null) {
+            // Can't find file to send from source
+            throw new VirtualFileNotFoundException(fileName);
+        } else if (destinationEntity.getFiles().get(fileName) != null) {
+            // File already exist at destination
+            throw new VirtualFileAlreadyExistsException(fileName);
+        }
+
+        // Begin the transfer
+        FileInfoResponse destinationFile = new FileInfoResponse(fileName, "", sourceFile.getFileSize(), false);
+        destinationEntity.getFiles().put(fileName, destinationFile);
+
+        // Store file transfer to keep track of each world state
+        FileTransfer fileTransfer = new FileTransfer(sourceEntity, destinationEntity, sourceFile.getFilename(),
+                sourceFile.getData(), destinationEntity.getFiles(), 0);
+        fileTransferList.add(fileTransfer);
     }
 
     public void createDevice(String deviceId, String type, Angle position, boolean isMoving) {

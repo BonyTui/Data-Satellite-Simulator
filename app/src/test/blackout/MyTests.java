@@ -1,6 +1,7 @@
 package blackout;
 
 import unsw.blackout.BlackoutController;
+import unsw.blackout.FileTransferException;
 import unsw.utils.Angle;
 
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,9 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import unsw.response.models.EntityInfoResponse;
 import unsw.response.models.FileInfoResponse;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static blackout.TestHelpers.assertListAreEqualIgnoringOrder;
 
 import java.util.Arrays;
@@ -23,13 +26,23 @@ public class MyTests {
     public static void main(String[] args) {
         BlackoutController controller = new BlackoutController();
 
-        controller.createSatellite("Satellite1", "StandardSatellite", 1000 + RADIUS_OF_JUPITER, Angle.fromDegrees(320));
-        controller.createSatellite("Satellite2", "StandardSatellite", 1000 + RADIUS_OF_JUPITER, Angle.fromDegrees(315));
+        // Creates 1 satellite and 2 devices
+        // Gets a device to send a file to a satellites and gets another device to download it.
+        // StandardSatellites are slow and transfer 1 byte per minute.
+        controller.createSatellite("Satellite1", "StandardSatellite", 5000 + RADIUS_OF_JUPITER, Angle.fromDegrees(320));
         controller.createDevice("DeviceB", "LaptopDevice", Angle.fromDegrees(310));
         controller.createDevice("DeviceC", "HandheldDevice", Angle.fromDegrees(320));
-        controller.createDevice("DeviceD", "HandheldDevice", Angle.fromDegrees(180));
-        controller.createSatellite("Satellite3", "StandardSatellite", 2000 + RADIUS_OF_JUPITER, Angle.fromDegrees(175));
 
-        System.out.println(controller.communicableEntitiesInRange("Satellite2"));
+        String msg = "Hey";
+        controller.addFileToDevice("DeviceC", "FileAlpha", msg);
+
+        assertDoesNotThrow(() -> controller.sendFile("FileAlpha", "DeviceC", "Satellite1"));
+
+        System.out.println(controller.getInfo("Satellite1"));
+        System.out.println();
+
+        controller.simulate(3);
+
+        System.out.println(controller.getInfo("Satellite1"));
     }
 }
