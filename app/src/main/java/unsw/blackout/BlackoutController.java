@@ -79,7 +79,11 @@ public class BlackoutController {
         } else if (type.equals("RelaySatellite")) {
             linearVelocity = 1500;
             satellite = new RelaySatellite(satelliteId, type, height, position, linearVelocity);
+        } else if (type.equals("TeleportingSatellite")) {
+            linearVelocity = 1000;
+            satellite = new TeleportingSatellite(satelliteId, type, height, position, linearVelocity);
         }
+
         satelliteList.add(satellite);
 
     }

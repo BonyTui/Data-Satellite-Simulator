@@ -172,25 +172,25 @@ public class Task2ExampleTests {
                 "RelaySatellite"), controller.getInfo("Satellite1"));
     }
 
-    // @Test
-    // public void testTeleportingMovement() {
-    //     // Test for expected teleportation movement behaviour
-    //     BlackoutController controller = new BlackoutController();
+    @Test
+    public void testTeleportingMovement() {
+        // Test for expected teleportation movement behaviour
+        BlackoutController controller = new BlackoutController();
 
-    //     controller.createSatellite("Satellite1", "TeleportingSatellite", 10000 + RADIUS_OF_JUPITER,
-    //             Angle.fromDegrees(0));
+        controller.createSatellite("Satellite1", "TeleportingSatellite", 10000 + RADIUS_OF_JUPITER,
+                Angle.fromDegrees(0));
 
-    //     controller.simulate();
-    //     Angle clockwiseOnFirstMovement = controller.getInfo("Satellite1").getPosition();
-    //     controller.simulate();
-    //     Angle clockwiseOnSecondMovement = controller.getInfo("Satellite1").getPosition();
-    //     assertTrue(clockwiseOnSecondMovement.compareTo(clockwiseOnFirstMovement) == 1);
+        controller.simulate();
+        Angle clockwiseOnFirstMovement = controller.getInfo("Satellite1").getPosition();
+        controller.simulate();
+        Angle clockwiseOnSecondMovement = controller.getInfo("Satellite1").getPosition();
+        assertTrue(clockwiseOnSecondMovement.compareTo(clockwiseOnFirstMovement) == 1);
 
-    //     // It should take 250 simulations to reach theta = 180.
-    //     // Simulate until Satellite1 reaches theta=180
-    //     controller.simulate(250);
+        // It should take 250 simulations to reach theta = 180.
+        // Simulate until Satellite1 reaches theta=180
+        controller.simulate(250);
 
-    //     // Verify that Satellite1 is now at theta=0
-    //     assertTrue(controller.getInfo("Satellite1").getPosition().toDegrees() % 360 == 0);
-    // }
+        // Verify that Satellite1 is now at theta=0
+        assertTrue(controller.getInfo("Satellite1").getPosition().toDegrees() % 360 == 0);
+    }
 }

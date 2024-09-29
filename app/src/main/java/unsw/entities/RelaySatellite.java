@@ -15,7 +15,7 @@ public class RelaySatellite extends StandardSatellite {
         double currentPositionDegrees = getPosition().toDegrees();
 
         if (currentPositionDegrees <= 140
-                || (currentPositionDegrees >= halfwayPoint && currentPositionDegrees <= 359.9999999)) {
+                || (currentPositionDegrees >= halfwayPoint && currentPositionDegrees <= 360)) {
             setDirection(-1);
         } else if (currentPositionDegrees >= 190 && currentPositionDegrees < halfwayPoint) {
             setDirection(1);
@@ -27,6 +27,6 @@ public class RelaySatellite extends StandardSatellite {
             newPosition = currentPosition.add(Angle.fromRadians(this.getAngularVelocity()));
         }
 
-        this.setPosition(newPosition);
+        setPosition(newPosition);
     }
 }
