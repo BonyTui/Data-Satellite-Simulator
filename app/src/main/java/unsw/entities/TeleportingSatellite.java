@@ -3,8 +3,8 @@ package unsw.entities;
 import unsw.utils.Angle;
 
 public class TeleportingSatellite extends StandardSatellite {
-    public TeleportingSatellite(String satelliteId, String type, double height, Angle position, double linearVelocity) {
-        super(satelliteId, type, height, position, linearVelocity);
+    public TeleportingSatellite(String satelliteId, String type, double height, Angle position) {
+        super(satelliteId, type, height, position);
         setDirection(-1);
     }
 

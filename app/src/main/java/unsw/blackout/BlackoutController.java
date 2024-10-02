@@ -1,11 +1,7 @@
 package unsw.blackout;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.reflections.vfs.Vfs.File;
 
 import unsw.blackout.FileTransferException.*;
 import unsw.entities.*;
@@ -27,13 +23,13 @@ public class BlackoutController {
 
     private Entity findEntity(String id) {
         for (Device device : deviceList) {
-            if (device.getId() == id) {
+            if (device.getId().equals(id)) {
                 return device;
             }
         }
 
         for (StandardSatellite satellite : satelliteList) {
-            if (satellite.getId() == id) {
+            if (satellite.getId().equals(id)) {
                 return satellite;
             }
         }
@@ -43,7 +39,7 @@ public class BlackoutController {
 
     private Device findDevice(String deviceId) {
         for (Device device : deviceList) {
-            if (device.getId() == deviceId) {
+            if (device.getId().equals(deviceId)) {
                 return device;
             }
         }
@@ -52,7 +48,7 @@ public class BlackoutController {
 
     private StandardSatellite findSatellite(String satelliteId) {
         for (StandardSatellite satellite : satelliteList) {
-            if (satellite.getId() == satelliteId) {
+            if (satellite.getId().equals(satelliteId)) {
                 return satellite;
             }
         }
@@ -72,20 +68,17 @@ public class BlackoutController {
 
     public void createSatellite(String satelliteId, String type, double height, Angle position) {
         StandardSatellite satellite = null;
-        final double linearVelocity;
         if (type.equals("StandardSatellite")) {
-            linearVelocity = 2500;
-            satellite = new StandardSatellite(satelliteId, type, height, position, 2500);
+            satellite = new StandardSatellite(satelliteId, type, height, position);
         } else if (type.equals("RelaySatellite")) {
-            linearVelocity = 1500;
-            satellite = new RelaySatellite(satelliteId, type, height, position, linearVelocity);
+            satellite = new RelaySatellite(satelliteId, type, height, position);
         } else if (type.equals("TeleportingSatellite")) {
-            linearVelocity = 1000;
-            satellite = new TeleportingSatellite(satelliteId, type, height, position, linearVelocity);
+            satellite = new TeleportingSatellite(satelliteId, type, height, position);
+        } else if (type.equals("ElephantSatellite")) {
+            satellite = new ElephantSatellite(satelliteId, type, height, position);
         }
 
         satelliteList.add(satellite);
-
     }
 
     public void removeSatellite(String satelliteId) {
@@ -132,15 +125,29 @@ public class BlackoutController {
         }
     }
 
-    public void simulate() {
-        for (StandardSatellite satellite : satelliteList) {
-            satellite.move();
-        }
-
+    public void transferFile() {
         List<FileTransfer> completeTransfer = new ArrayList<FileTransfer>();
         for (FileTransfer fileTransfer : fileTransferList) {
+            Entity sourceEntity = fileTransfer.getSourceEntity();
+            Entity destinationEntity = fileTransfer.getDestinationEntity();
+            if (!communicable(sourceEntity.getId(), destinationEntity.getId())) {
+                System.out.println("Out of range");
+                continue;
+            }
+
             String fileName = fileTransfer.getFileName();
-            int numByteTransferred = fileTransfer.getByteTransferred() + 1;
+
+            int numByteTransferred = 0;
+            if (sourceEntity instanceof Device) {
+                // Device to Satellite
+                numByteTransferred = fileTransfer.getByteTransferred() + destinationEntity.getDownloadSpeed();
+            } else if (sourceEntity instanceof StandardSatellite) {
+                // Satellite to Device/Satellite
+                numByteTransferred = fileTransfer.getByteTransferred()
+                        + Math.min(sourceEntity.getUploadSpeed(), destinationEntity.getDownloadSpeed());
+            }
+            System.out.println(numByteTransferred);
+
             String sourceData = fileTransfer.getFileContent();
             String transferredData = sourceData.substring(0, numByteTransferred);
             boolean isFileComplete = false;
@@ -161,6 +168,14 @@ public class BlackoutController {
         fileTransferList.removeAll(completeTransfer);
     }
 
+    public void simulate() {
+        for (StandardSatellite satellite : satelliteList) {
+            satellite.move();
+        }
+
+        transferFile();
+    }
+
     /**
      * Simulate for the specified number of minutes. You shouldn't need to modify
      * this function.
@@ -171,64 +186,38 @@ public class BlackoutController {
         }
     }
 
-    private List<String> communicableSatellitesInRangeOfDevice(Entity entity) {
-        List<String> communicableSatellites = new ArrayList<>();
-        for (StandardSatellite satellite : satelliteList) {
-            double distance = MathsHelper.getDistance(satellite.getHeight(), satellite.getPosition(),
-                    entity.getPosition());
-            if (((distance <= entity.getMaxRange()) || (distance <= satellite.getMaxRange()))
-                    && MathsHelper.isVisible(satellite.getHeight(), satellite.getPosition(), entity.getPosition())
-                    && satellite.getId() != entity.getId()) {
-                communicableSatellites.add(satellite.getId());
-            }
-        }
-        return communicableSatellites;
-    }
-
-    private List<String> communicableSatellitesInRangeOfSatellite(Entity entity) {
-        List<String> communicableSatellites = new ArrayList<>();
-        for (StandardSatellite satellite : satelliteList) {
-            double distance = MathsHelper.getDistance(satellite.getHeight(), satellite.getPosition(),
-                    entity.getHeight(), entity.getPosition());
-            if (((distance <= entity.getMaxRange()) || (distance <= satellite.getMaxRange())) && MathsHelper
-                    .isVisible(satellite.getHeight(), satellite.getPosition(), entity.getHeight(), entity.getPosition())
-                    && satellite.getId() != entity.getId()) {
-                communicableSatellites.add(satellite.getId());
-            }
-        }
-        return communicableSatellites;
-    }
-
-    private List<String> communicableDeviceInRange(Entity entity) {
-        List<String> communicableDevices = new ArrayList<>();
-        for (Device device : deviceList) {
-            double distance = MathsHelper.getDistance(entity.getHeight(), entity.getPosition(), device.getPosition());
-            if (((distance <= entity.getMaxRange()) || (distance <= device.getMaxRange()))
-                    && MathsHelper.isVisible(entity.getHeight(), entity.getPosition(), device.getPosition())
-                    && device.getId() != entity.getId()) {
-                communicableDevices.add(device.getId());
-            }
-        }
-        return communicableDevices;
-    }
-
     public List<String> communicableEntitiesInRange(String id) {
-        List<String> communicableEntities = new ArrayList<>();
-        Entity entity = findEntity(id);
+        List<Entity> entityList = new ArrayList<>();
+        entityList.addAll(satelliteList);
+        entityList.addAll(deviceList);
 
-        if (entity.getClass() == Device.class) {
-            for (String satelliteId : communicableSatellitesInRangeOfDevice(entity)) {
-                communicableEntities.add(satelliteId);
-            }
-        } else if (entity.getClass() == StandardSatellite.class) {
-            for (String satelliteId : communicableSatellitesInRangeOfSatellite(entity)) {
-                communicableEntities.add(satelliteId);
-            }
-            for (String deviceId : communicableDeviceInRange(entity)) {
-                communicableEntities.add(deviceId);
+        List<String> communicableEntities = new ArrayList<>();
+        Entity sourceEntity = findEntity(id);
+
+        for (Entity destinationEntity : entityList) {
+            double distance = MathsHelper.getDistance(sourceEntity.getHeight(), sourceEntity.getPosition(),
+                    destinationEntity.getHeight(), destinationEntity.getPosition());
+            if (distance <= sourceEntity.getMaxRange()
+                    && MathsHelper.isVisible(sourceEntity.getHeight(), sourceEntity.getPosition(),
+                            destinationEntity.getHeight(), destinationEntity.getPosition())
+                    && !sourceEntity.getId().equals(destinationEntity.getId())
+                    && sourceEntity.getSupportedTypes().contains(destinationEntity.getType())) {
+                communicableEntities.add(destinationEntity.getId());
             }
         }
+
         return communicableEntities;
+    }
+
+    private boolean communicable(String sourceId, String destinationId) {
+        List<String> communicableEntities = communicableEntitiesInRange(sourceId);
+        Entity sourceEntity = findEntity(sourceId);
+        Entity destinationEntity = findEntity(destinationId);
+        if (communicableEntities.contains(destinationId)
+                && sourceEntity.getSupportedTypes().contains(destinationEntity.getType())) {
+            return true;
+        }
+        return false;
     }
 
     public void sendFile(String fileName, String fromId, String toId) throws FileTransferException {
