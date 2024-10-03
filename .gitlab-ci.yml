@@ -40,5 +40,8 @@ dryrun-tests:
     - tar -xvf /data/assignment-i-tests.tar -C app/src/
     - echo "Checking if your code compiles with the dryrun tests"
     - gradle compile
-    - echo "Checking if your code passes the dryrun tests"
+    - echo "Checking if your code passes the dryrun tests."
+    - echo "If you have not completed all tasks, you should expect some tests to fail"
     - gradle test
+  after_script:
+    - echo "If you have not completed all tasks, you should expect some tests to fail"
