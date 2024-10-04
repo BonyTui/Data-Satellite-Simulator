@@ -18,7 +18,7 @@ import unsw.utils.MathsHelper;
  */
 public class BlackoutController {
     private List<Device> deviceList = new ArrayList<>();
-    private List<StandardSatellite> satelliteList = new ArrayList<>();
+    private List<Satellite> satelliteList = new ArrayList<>();
     private List<FileTransfer> fileTransferList = new ArrayList<FileTransfer>();
 
     private Entity findEntity(String id) {
@@ -28,7 +28,7 @@ public class BlackoutController {
             }
         }
 
-        for (StandardSatellite satellite : satelliteList) {
+        for (Satellite satellite : satelliteList) {
             if (satellite.getId().equals(id)) {
                 return satellite;
             }
@@ -46,8 +46,8 @@ public class BlackoutController {
         return null;
     }
 
-    private StandardSatellite findSatellite(String satelliteId) {
-        for (StandardSatellite satellite : satelliteList) {
+    private Satellite findSatellite(String satelliteId) {
+        for (Satellite satellite : satelliteList) {
             if (satellite.getId().equals(satelliteId)) {
                 return satellite;
             }
@@ -56,7 +56,20 @@ public class BlackoutController {
     }
 
     public void createDevice(String deviceId, String type, Angle position) {
-        Device device = new Device(deviceId, type, position);
+        Device device = null;
+        switch (type) {
+        case "HandheldDevice":
+            device = new HandheldDevice(deviceId, type, position);
+            break;
+        case "LaptopDevice":
+            device = new LaptopDevice(deviceId, type, position);
+            break;
+        case "DesktopDevice":
+            device = new DesktopDevice(deviceId, type, position);
+            break;
+        default:
+            break;
+        }
         deviceList.add(device);
     }
 
@@ -67,22 +80,28 @@ public class BlackoutController {
     }
 
     public void createSatellite(String satelliteId, String type, double height, Angle position) {
-        StandardSatellite satellite = null;
-        if (type.equals("StandardSatellite")) {
+        Satellite satellite = null;
+        switch (type) {
+        case "StandardSatellite":
             satellite = new StandardSatellite(satelliteId, type, height, position);
-        } else if (type.equals("RelaySatellite")) {
+            break;
+        case "RelaySatellite":
             satellite = new RelaySatellite(satelliteId, type, height, position);
-        } else if (type.equals("TeleportingSatellite")) {
+            break;
+        case "TeleportingSatellite":
             satellite = new TeleportingSatellite(satelliteId, type, height, position);
-        } else if (type.equals("ElephantSatellite")) {
+            break;
+        case "ElephantSatellite":
             satellite = new ElephantSatellite(satelliteId, type, height, position);
+            break;
+        default:
+            break;
         }
-
         satelliteList.add(satellite);
     }
 
     public void removeSatellite(String satelliteId) {
-        StandardSatellite satellite = findSatellite(satelliteId);
+        Satellite satellite = findSatellite(satelliteId);
         satelliteList.remove(satellite);
         satellite = null;
     }
@@ -100,7 +119,7 @@ public class BlackoutController {
     public List<String> listSatelliteIds() {
         List<String> satelliteIds = new ArrayList<>();
 
-        for (StandardSatellite satellite : satelliteList) {
+        for (Satellite satellite : satelliteList) {
             satelliteIds.add(satellite.getId());
         }
 
@@ -141,7 +160,7 @@ public class BlackoutController {
             if (sourceEntity instanceof Device) {
                 // Device to Satellite
                 numByteTransferred = fileTransfer.getByteTransferred() + destinationEntity.getDownloadSpeed();
-            } else if (sourceEntity instanceof StandardSatellite) {
+            } else if (sourceEntity instanceof Satellite) {
                 // Satellite to Device/Satellite
                 numByteTransferred = fileTransfer.getByteTransferred()
                         + Math.min(sourceEntity.getUploadSpeed(), destinationEntity.getDownloadSpeed());
@@ -169,7 +188,7 @@ public class BlackoutController {
     }
 
     public void simulate() {
-        for (StandardSatellite satellite : satelliteList) {
+        for (Satellite satellite : satelliteList) {
             satellite.move();
         }
 

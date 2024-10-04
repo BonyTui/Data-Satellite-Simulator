@@ -2,9 +2,16 @@ package unsw.entities;
 
 import unsw.utils.Angle;
 
-public class RelaySatellite extends StandardSatellite {
+public class RelaySatellite extends Satellite {
     public RelaySatellite(String satelliteId, String type, double height, Angle position) {
         super(satelliteId, type, height, position);
+        setLinearVelocity(1500);
+        setMaxRange(300000);
+        setFileStorageLimit(0);
+        setByteStorageLimit(0);
+        setDownloadSpeed(Integer.MAX_VALUE);
+        setUploadSpeed(Integer.MAX_VALUE);
+        getSupportedTypes().remove("DesktopDevice");
     }
 
     @Override

@@ -2,10 +2,17 @@ package unsw.entities;
 
 import unsw.utils.Angle;
 
-public class TeleportingSatellite extends StandardSatellite {
+public class TeleportingSatellite extends Satellite {
     public TeleportingSatellite(String satelliteId, String type, double height, Angle position) {
         super(satelliteId, type, height, position);
         setDirection(-1);
+        setLinearVelocity(1000);
+        setMaxRange(200000);
+        setFileStorageLimit(Integer.MAX_VALUE);
+        setByteStorageLimit(200);
+        setDownloadSpeed(15);
+        setUploadSpeed(10);
+        getSupportedTypes().remove("ElephantSatellite");
     }
 
     @Override

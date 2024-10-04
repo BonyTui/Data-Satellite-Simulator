@@ -26,81 +26,23 @@ public class Entity {
     private Map<String, FileInfoResponse> files = new HashMap<String, FileInfoResponse>();
     private List<String> supportedTypes = new ArrayList<>();
 
+    public static final List<String> ALLSATELLITES = new ArrayList<>();
+    public static final List<String> ALLDEVICES = new ArrayList<>();
+
     public Entity(String id, Angle position, double height, String type) {
         this.id = id;
         this.position = position;
         this.height = height;
         this.type = type;
 
-        final List<String> allSatellites = new ArrayList<>();
-        allSatellites.add("StandardSatellite");
-        allSatellites.add("RelaySatellite");
-        allSatellites.add("TeleportingSatellite");
-        allSatellites.add("ElephantSatellite");
+        ALLSATELLITES.add("StandardSatellite");
+        ALLSATELLITES.add("RelaySatellite");
+        ALLSATELLITES.add("TeleportingSatellite");
+        ALLSATELLITES.add("ElephantSatellite");
 
-        final List<String> allDevices = new ArrayList<>();
-        allSatellites.add("HandheldDevice");
-        allSatellites.add("LaptopDevice");
-        allSatellites.add("DesktopDevice");
-
-        if (type.equals("StandardSatellite")) {
-            this.linearVelocity = 2500;
-            this.maxRange = 150000;
-            this.fileStorageLimit = 3;
-            this.byteStorageLimit = 80;
-            this.downloadSpeed = 1;
-            this.uploadSpeed = 1;
-            supportedTypes.addAll(allDevices);
-            supportedTypes.remove("DesktopDevice");
-            supportedTypes.addAll(allSatellites);
-        } else if (type.equals("TeleportingSatellite")) {
-            this.linearVelocity = 1000;
-            this.maxRange = 200000;
-            this.fileStorageLimit = Integer.MAX_VALUE;
-            this.byteStorageLimit = 200;
-            this.downloadSpeed = 15;
-            this.uploadSpeed = 10;
-            supportedTypes.addAll(allDevices);
-            supportedTypes.addAll(allSatellites);
-            supportedTypes.remove("ElephantSatellite");
-        } else if (type.equals("RelaySatellite")) {
-            this.linearVelocity = 1500;
-            this.maxRange = 300000;
-            this.fileStorageLimit = 0;
-            this.byteStorageLimit = 0;
-            this.downloadSpeed = Integer.MAX_VALUE;
-            this.uploadSpeed = Integer.MAX_VALUE;
-            supportedTypes.addAll(allDevices);
-            supportedTypes.addAll(allSatellites);
-        } else if (type.equals("ElephantSatellite")) {
-            this.linearVelocity = 2500;
-            this.maxRange = 400000;
-            this.fileStorageLimit = Integer.MAX_VALUE;
-            this.byteStorageLimit = 90;
-            this.downloadSpeed = 20;
-            this.uploadSpeed = 20;
-            supportedTypes.addAll(allDevices);
-            supportedTypes.remove("HandheldDevice");
-            supportedTypes.addAll(allSatellites);
-            supportedTypes.remove("TeleportingSatellite");
-        } else if (type.equals("HandheldDevice")) {
-            this.maxRange = 50000;
-            this.fileStorageLimit = Integer.MAX_VALUE;
-            this.byteStorageLimit = Integer.MAX_VALUE;
-            this.downloadSpeed = Integer.MAX_VALUE;
-            this.uploadSpeed = Integer.MAX_VALUE;
-            supportedTypes.addAll(allSatellites);
-            supportedTypes.remove("ElephantSatellite");
-        } else if (type.equals("LaptopDevice")) {
-            this.maxRange = 100000;
-            supportedTypes.addAll(allSatellites);
-        } else if (type.equals("DesktopDevice")) {
-            this.maxRange = 200000;
-            supportedTypes.addAll(allSatellites);
-            supportedTypes.remove("StandardSatellite");
-        }
-
-        this.angularVelocity = linearVelocity / height;
+        ALLDEVICES.add("HandheldDevice");
+        ALLDEVICES.add("LaptopDevice");
+        ALLDEVICES.add("DesktopDevice");
     }
 
     public String getId() {
@@ -120,6 +62,7 @@ public class Entity {
     }
 
     public double getAngularVelocity() {
+        setAngularVelocity(getLinearVelocity() / getHeight());
         return angularVelocity;
     }
 
@@ -135,8 +78,32 @@ public class Entity {
         return uploadSpeed;
     }
 
+    public void setLinearVelocity(double linearVelocity) {
+        this.linearVelocity = linearVelocity;
+    }
+
+    public void setFileStorageLimit(int fileStorageLimit) {
+        this.fileStorageLimit = fileStorageLimit;
+    }
+
+    public void setByteStorageLimit(int byteStorageLimit) {
+        this.byteStorageLimit = byteStorageLimit;
+    }
+
+    public void setDownloadSpeed(int downloadSpeed) {
+        this.downloadSpeed = downloadSpeed;
+    }
+
+    public void setUploadSpeed(int uploadSpeed) {
+        this.uploadSpeed = uploadSpeed;
+    }
+
     public int getFileStorageLimit() {
         return fileStorageLimit;
+    }
+
+    public void setAngularVelocity(double angularVelocity) {
+        this.angularVelocity = angularVelocity;
     }
 
     public int getByteStorageLimit() {
@@ -172,7 +139,7 @@ public class Entity {
     }
 
     public void setLinearVelocity(int linearVelocity) {
-        this.linearVelocity = maxRange;
+        this.linearVelocity = linearVelocity;
     }
 
     public void move() {
