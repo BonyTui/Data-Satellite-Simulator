@@ -19,7 +19,11 @@ import unsw.utils.MathsHelper;
 public class BlackoutController {
     private List<Device> deviceList = new ArrayList<>();
     private List<Satellite> satelliteList = new ArrayList<>();
-    private List<FileTransfer> fileTransferList = new ArrayList<FileTransfer>();
+    private static List<FileTransfer> fileTransferList = new ArrayList<FileTransfer>();
+
+    public static List<FileTransfer> getFileTransferList() {
+        return fileTransferList;
+    }
 
     private Entity findEntity(String id) {
         for (Device device : deviceList) {
@@ -150,7 +154,6 @@ public class BlackoutController {
             Entity sourceEntity = fileTransfer.getSourceEntity();
             Entity destinationEntity = fileTransfer.getDestinationEntity();
             if (!communicable(sourceEntity.getId(), destinationEntity.getId())) {
-                System.out.println("Out of range");
                 continue;
             }
 
@@ -165,9 +168,10 @@ public class BlackoutController {
                 numByteTransferred = fileTransfer.getByteTransferred()
                         + Math.min(sourceEntity.getUploadSpeed(), destinationEntity.getDownloadSpeed());
             }
-            System.out.println(numByteTransferred);
 
             String sourceData = fileTransfer.getFileContent();
+
+            numByteTransferred = Math.min(numByteTransferred, sourceData.length());
             String transferredData = sourceData.substring(0, numByteTransferred);
             boolean isFileComplete = false;
 
@@ -262,7 +266,7 @@ public class BlackoutController {
 
         // Store file transfer to keep track of each world state
         FileTransfer fileTransfer = new FileTransfer(sourceEntity, destinationEntity, sourceFile.getFilename(),
-                sourceFile.getData(), destinationEntity.getFiles(), 0);
+                sourceFile.getData(), destinationEntity.getFiles(), sourceEntity.getFiles(), 0);
         fileTransferList.add(fileTransfer);
     }
 

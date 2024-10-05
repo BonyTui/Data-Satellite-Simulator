@@ -1,6 +1,11 @@
 package unsw.entities;
 
 import unsw.utils.Angle;
+import unsw.response.models.FileInfoResponse;
+
+import java.util.List;
+import unsw.blackout.BlackoutController;
+import unsw.blackout.FileTransfer;
 
 public class TeleportingSatellite extends Satellite {
     public TeleportingSatellite(String satelliteId, String type, double height, Angle position) {
@@ -26,21 +31,71 @@ public class TeleportingSatellite extends Satellite {
         if (getDirection() == 1) {
             // Moving Clockwise
             if (currentPositionDegrees >= 180 && currentPositionDegrees <= 180 + offset) {
-                newPosition = Angle.fromDegrees(360);
-                setDirection(-1);
+                newPosition = teleport();
             } else {
                 newPosition = currentPosition.subtract(Angle.fromRadians(this.getAngularVelocity()));
             }
         } else {
             // Moving Anti-Clockwise
             if (currentPositionDegrees <= 180 && currentPositionDegrees >= 180 - offset) {
-                newPosition = Angle.fromDegrees(360);
-                setDirection(1);
+                newPosition = teleport();
             } else {
                 newPosition = currentPosition.add(Angle.fromRadians(this.getAngularVelocity()));
             }
         }
 
         setPosition(newPosition);
+    }
+
+    public Angle teleport() {
+        // This method violates Law of Demeter, but is necessary to access file that exists in
+        // so many locations: destination, source, transferList
+
+        setDirection(getDirection() * -1);
+
+        // Get all the file transfers going from devices to this satellite
+        List<FileTransfer> deviceToSatelliteTransfers = BlackoutController.getFileTransferList().stream()
+                .filter(file -> (file.getSourceEntity() instanceof Device) && (file.getDestinationEntity() == this))
+                .toList();
+
+        if (!deviceToSatelliteTransfers.isEmpty()) {
+            // Remove incomplete files from the destination satellite.
+            getFiles().entrySet().removeIf(entry -> !entry.getValue().isFileComplete());
+
+            // Modify file on source device to replace all 't' character.
+            for (FileTransfer file : deviceToSatelliteTransfers) {
+                String fileName = file.getFileName();
+                String fileContent = file.getFileContent();
+                String modifiedContent = fileContent.replace("t", "");
+
+                FileInfoResponse updatedFile = new FileInfoResponse(fileName, modifiedContent, modifiedContent.length(),
+                        true);
+                file.getSourceEntity().getFiles().put(fileName, updatedFile);
+            }
+        }
+
+        // Get all the file transfers going from this satellite to other satellites and devices
+        List<FileTransfer> satelliteToOtherTransfers = BlackoutController.getFileTransferList().stream()
+                .filter(file -> (file.getSourceEntity() == this)).toList();
+
+        if (!satelliteToOtherTransfers.isEmpty()) {
+            // Modify file on destination entities to replace all 't' character.
+            for (FileTransfer file : satelliteToOtherTransfers) {
+                String fileName = file.getFileName();
+
+                // Concat downloaded content with the 't byte removed' rest of the content
+                String fileContent = file.getFileContent();
+                String downloadedContent = fileContent.substring(0, file.getByteTransferred());
+                String remainingContent = fileContent.substring(file.getByteTransferred() - 1, fileContent.length())
+                        .replace("t", "");
+                String modifiedContent = downloadedContent + remainingContent;
+
+                FileInfoResponse updatedFile = new FileInfoResponse(fileName, modifiedContent, modifiedContent.length(),
+                        true);
+                file.getDestinationEntity().getFiles().put(fileName, updatedFile);
+            }
+        }
+
+        return Angle.fromDegrees(360);
     }
 }

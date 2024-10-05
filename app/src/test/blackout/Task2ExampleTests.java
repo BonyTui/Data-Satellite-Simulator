@@ -1,5 +1,7 @@
 package blackout;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -22,36 +24,24 @@ import static blackout.TestHelpers.assertListAreEqualIgnoringOrder;
 
 @TestInstance(value = Lifecycle.PER_CLASS)
 public class Task2ExampleTests {
-    // Uncomment out the tests once you have completed each task.
-    @Test
-    public void testEntitiesInRange() {
-        // Task 2
-        // Example from the specification
-        BlackoutController controller = new BlackoutController();
+    private BlackoutController controller;
 
-        // Creates 1 satellite and 2 devices
-        // Gets a device to send a file to a satellites and gets another device to download it.
-        // StandardSatellites are slow and transfer 1 byte per minute.
-        controller.createSatellite("Satellite1", "StandardSatellite", 1000 + RADIUS_OF_JUPITER, Angle.fromDegrees(320));
-        controller.createSatellite("Satellite2", "StandardSatellite", 1000 + RADIUS_OF_JUPITER, Angle.fromDegrees(315));
-        controller.createDevice("DeviceB", "LaptopDevice", Angle.fromDegrees(310));
-        controller.createDevice("DeviceC", "HandheldDevice", Angle.fromDegrees(320));
-        controller.createDevice("DeviceD", "HandheldDevice", Angle.fromDegrees(180));
-        controller.createSatellite("Satellite3", "StandardSatellite", 2000 + RADIUS_OF_JUPITER, Angle.fromDegrees(175));
+    @BeforeEach
+    public void setUp() {
+        // Initialize before each test
+        controller = new BlackoutController();
 
-        assertListAreEqualIgnoringOrder(Arrays.asList("DeviceC", "Satellite2"),
-                controller.communicableEntitiesInRange("Satellite1"));
-        assertListAreEqualIgnoringOrder(Arrays.asList("DeviceB", "DeviceC", "Satellite1"),
-                controller.communicableEntitiesInRange("Satellite2"));
-        assertListAreEqualIgnoringOrder(Arrays.asList("Satellite2"), controller.communicableEntitiesInRange("DeviceB"));
+    }
 
-        assertListAreEqualIgnoringOrder(Arrays.asList("DeviceD"), controller.communicableEntitiesInRange("Satellite3"));
+    @AfterEach
+    public void tearDown() {
+        // Tear down logic after each test
+        controller = null; // Reset the controller
     }
 
     @Test
     public void testSomeExceptionsForSend() {
         // just some of them... you'll have to test the rest
-        BlackoutController controller = new BlackoutController();
 
         // Creates 1 satellite and 2 devices
         // Gets a device to send a file to a satellites and gets another device to download it.
@@ -74,10 +64,33 @@ public class Task2ExampleTests {
     }
 
     @Test
+    public void testEntitiesInRange() {
+        // Task 2
+        // Example from the specification
+
+        // Creates 1 satellite and 2 devices
+        // Gets a device to send a file to a satellites and gets another device to download it.
+        // StandardSatellites are slow and transfer 1 byte per minute.
+        controller.createSatellite("Satellite1", "StandardSatellite", 1000 + RADIUS_OF_JUPITER, Angle.fromDegrees(320));
+        controller.createSatellite("Satellite2", "StandardSatellite", 1000 + RADIUS_OF_JUPITER, Angle.fromDegrees(315));
+        controller.createDevice("DeviceB", "LaptopDevice", Angle.fromDegrees(310));
+        controller.createDevice("DeviceC", "HandheldDevice", Angle.fromDegrees(320));
+        controller.createDevice("DeviceD", "HandheldDevice", Angle.fromDegrees(180));
+        controller.createSatellite("Satellite3", "StandardSatellite", 2000 + RADIUS_OF_JUPITER, Angle.fromDegrees(175));
+
+        assertListAreEqualIgnoringOrder(Arrays.asList("DeviceC", "Satellite2"),
+                controller.communicableEntitiesInRange("Satellite1"));
+        assertListAreEqualIgnoringOrder(Arrays.asList("DeviceB", "DeviceC", "Satellite1"),
+                controller.communicableEntitiesInRange("Satellite2"));
+        assertListAreEqualIgnoringOrder(Arrays.asList("Satellite2"), controller.communicableEntitiesInRange("DeviceB"));
+
+        assertListAreEqualIgnoringOrder(Arrays.asList("DeviceD"), controller.communicableEntitiesInRange("Satellite3"));
+    }
+
+    @Test
     public void testMovement() {
         // Task 2
         // Example from the specification
-        BlackoutController controller = new BlackoutController();
 
         // Creates 1 satellite and 2 devices
         // Gets a device to send a file to a satellites and gets another device to download it.
@@ -94,7 +107,6 @@ public class Task2ExampleTests {
     public void testExample() {
         // Task 2
         // Example from the specification
-        BlackoutController controller = new BlackoutController();
 
         // Creates 1 satellite and 2 devices
         // Gets a device to send a file to a satellites and gets another device to download it.
@@ -121,18 +133,12 @@ public class Task2ExampleTests {
         controller.simulate(msg.length());
         assertEquals(new FileInfoResponse("FileAlpha", msg, msg.length(), true),
                 controller.getInfo("DeviceB").getFiles().get("FileAlpha"));
-
-        // Hints for further testing:
-        // - What about checking about the progress of the message half way through?
-        // - Device/s get out of range of satellite
-        // ... and so on.
     }
 
     @Test
     public void testRelayMovement() {
         // Task 2
         // Example from the specification
-        BlackoutController controller = new BlackoutController();
 
         // Creates 1 satellite and 2 devices
         // Gets a device to send a file to a satellites and gets another device to download it.
@@ -175,7 +181,6 @@ public class Task2ExampleTests {
     @Test
     public void testTeleportingMovement() {
         // Test for expected teleportation movement behaviour
-        BlackoutController controller = new BlackoutController();
 
         controller.createSatellite("Satellite1", "TeleportingSatellite", 10000 + RADIUS_OF_JUPITER,
                 Angle.fromDegrees(0));
@@ -192,5 +197,107 @@ public class Task2ExampleTests {
 
         // Verify that Satellite1 is now at theta=0
         assertTrue(controller.getInfo("Satellite1").getPosition().toDegrees() % 360 == 0);
+    }
+
+    // My tests: File Transfers
+    @Test
+    public void testIncompleteTransfer() {
+        // Test for expected teleportation movement behaviour
+
+        controller.createSatellite("Satellite1", "StandardSatellite", 10000 + RADIUS_OF_JUPITER, Angle.fromDegrees(0));
+
+        controller.createDevice("DeviceC", "HandheldDevice", Angle.fromDegrees(0));
+
+        String msg = "123456789";
+        controller.addFileToDevice("DeviceC", "FileAlpha", msg);
+        assertDoesNotThrow(() -> controller.sendFile("FileAlpha", "DeviceC", "Satellite1"));
+        assertEquals(new FileInfoResponse("FileAlpha", "", msg.length(), false),
+                controller.getInfo("Satellite1").getFiles().get("FileAlpha"));
+
+        controller.simulate();
+
+        assertEquals(new FileInfoResponse("FileAlpha", "1", msg.length(), false),
+                controller.getInfo("Satellite1").getFiles().get("FileAlpha"));
+
+        controller.simulate(5);
+
+        assertEquals(new FileInfoResponse("FileAlpha", "123456", msg.length(), false),
+                controller.getInfo("Satellite1").getFiles().get("FileAlpha"));
+
+        controller.simulate(20);
+
+        assertEquals(new FileInfoResponse("FileAlpha", "123456789", msg.length(), true),
+                controller.getInfo("Satellite1").getFiles().get("FileAlpha"));
+    }
+
+    @Test
+    public void testTeleportTransferDeviceToSatellite() {
+        // Test for expected teleportation movement behaviour
+
+        controller.createSatellite("Satellite1", "TeleportingSatellite", 10000 + RADIUS_OF_JUPITER,
+                Angle.fromDegrees(179));
+
+        controller.createDevice("DeviceC", "HandheldDevice", Angle.fromDegrees(180));
+
+        String msg = "ttttttttttttttotttttttttttattttttttttttbttttttt";
+        controller.addFileToDevice("DeviceC", "FileAlpha", msg);
+        assertDoesNotThrow(() -> controller.sendFile("FileAlpha", "DeviceC", "Satellite1"));
+        assertEquals(new FileInfoResponse("FileAlpha", "", msg.length(), false),
+                controller.getInfo("Satellite1").getFiles().get("FileAlpha"));
+
+        controller.simulate();
+
+        assertEquals(new FileInfoResponse("FileAlpha", "tttttttttttttto", msg.length(), false),
+                controller.getInfo("Satellite1").getFiles().get("FileAlpha"));
+
+        controller.simulate();
+
+        // Satellite1 Teleports
+
+        assertEquals(new FileInfoResponse("FileAlpha", "oab", 3, true),
+                controller.getInfo("DeviceC").getFiles().get("FileAlpha"));
+
+        assertEquals(null, controller.getInfo("Satellite1").getFiles().get("FileAlpha"));
+    }
+
+    @Test
+    public void testTeleportTransferSatelliteToDevice() {
+        // Test for expected teleportation movement behaviour
+
+        // 3 mins from teleporting
+        controller.createSatellite("Satellite1", "TeleportingSatellite", 10000 + RADIUS_OF_JUPITER,
+                Angle.fromDegrees(178));
+
+        controller.createDevice("DeviceC", "HandheldDevice", Angle.fromDegrees(180));
+        controller.createDevice("DeviceB", "HandheldDevice", Angle.fromDegrees(181));
+
+        String msg = "tatottttttttbtt";
+        controller.addFileToDevice("DeviceC", "FileAlpha", msg);
+        assertDoesNotThrow(() -> controller.sendFile("FileAlpha", "DeviceC", "Satellite1"));
+        assertEquals(new FileInfoResponse("FileAlpha", "", msg.length(), false),
+                controller.getInfo("Satellite1").getFiles().get("FileAlpha"));
+
+        controller.simulate();
+
+        assertEquals(new FileInfoResponse("FileAlpha", msg, msg.length(), true),
+                controller.getInfo("Satellite1").getFiles().get("FileAlpha"));
+
+        // Teleporting  Satellite send file to device
+        assertDoesNotThrow(() -> controller.sendFile("FileAlpha", "Satellite1", "DeviceB"));
+        assertEquals(new FileInfoResponse("FileAlpha", "", msg.length(), false),
+                controller.getInfo("DeviceB").getFiles().get("FileAlpha"));
+
+        controller.simulate();
+
+        assertEquals(new FileInfoResponse("FileAlpha", "tatotttttt", msg.length(), false),
+                controller.getInfo("DeviceB").getFiles().get("FileAlpha"));
+
+        controller.simulate();
+
+        // Satellite1 Teleports
+
+        assertEquals(new FileInfoResponse("FileAlpha", "tatottttttb", 11, true),
+                controller.getInfo("DeviceB").getFiles().get("FileAlpha"));
+
     }
 }

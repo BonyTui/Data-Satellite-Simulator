@@ -10,13 +10,16 @@ public class FileTransfer {
     private Entity destinationEntity;
     private String fileName;
     private String fileContent;
+    private Map<String, FileInfoResponse> sourceFileStorage;;
     private Map<String, FileInfoResponse> destinationFileStorage;
     private int byteTransferred;
 
     public FileTransfer(Entity sourceEntity, Entity destinationEntity, String fileName, String fileContent,
-            Map<String, FileInfoResponse> destinationFileStorage, int byteTransferred) {
+            Map<String, FileInfoResponse> destinationFileStorage, Map<String, FileInfoResponse> sourceFileStorage,
+            int byteTransferred) {
         this.sourceEntity = sourceEntity;
         this.destinationEntity = destinationEntity;
+        this.sourceFileStorage = sourceFileStorage;
         this.fileName = fileName;
         this.fileContent = fileContent;
         this.destinationFileStorage = destinationFileStorage;
@@ -37,6 +40,10 @@ public class FileTransfer {
 
     public String getFileContent() {
         return fileContent;
+    }
+
+    public void setFileContent(String fileContent) {
+        this.fileContent = fileContent;
     }
 
     public Map<String, FileInfoResponse> getDestinationFileStorage() {
