@@ -165,11 +165,13 @@ public class BlackoutController {
         for (FileTransfer fileTransfer : fileTransferList) {
             Entity sourceEntity = fileTransfer.getSourceEntity();
             Entity destinationEntity = fileTransfer.getDestinationEntity();
+            String fileName = fileTransfer.getFileName();
             if (!communicable(sourceEntity.getId(), destinationEntity.getId())) {
+                destinationEntity.getFiles().entrySet().removeIf(
+                        entry -> !entry.getValue().isFileComplete() && entry.getValue().getFilename().equals(fileName));
+                fileTransfer = null;
                 continue;
             }
-
-            String fileName = fileTransfer.getFileName();
 
             int numByteTransferred = 0;
             if (sourceEntity instanceof Device) {
@@ -258,7 +260,10 @@ public class BlackoutController {
 
         // Check for mutual connections via relay
         for (Entity relaySatellite : communicableRelays) {
-            communicableEntities.addAll(communicableEntitiesInRange(relaySatellite.getId(), visitedEntities));
+            List<String> mutualConnections = communicableEntitiesInRange(relaySatellite.getId(), visitedEntities);
+            // mutualConnections = mutualConnections.stream()
+            //         .filter(entity -> sourceEntity.getSupportedTypes().contains(findEntity(id).getType())).toList();
+            communicableEntities.addAll(mutualConnections);
         }
 
         // Remove duplicates
@@ -292,9 +297,7 @@ public class BlackoutController {
             throw new VirtualFileAlreadyExistsException(fileName);
         }
 
-        // else if (sourceEntity.getUploadSpeed()) {
-
-        // }
+        // Check
 
         // Begin the transfer
         FileInfoResponse destinationFile = new FileInfoResponse(fileName, "", sourceFile.getFileSize(), false);

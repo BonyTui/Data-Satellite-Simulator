@@ -199,6 +199,21 @@ public class Task2ExampleTests {
         assertTrue(controller.getInfo("Satellite1").getPosition().toDegrees() % 360 == 0);
     }
 
+    // My tests: Communicable
+    @Test
+    public void unsupportedTypeCommunication() {
+        controller.createSatellite("StandardSatellite", "StandardSatellite", 10000 + RADIUS_OF_JUPITER,
+                Angle.fromDegrees(90));
+
+        controller.createDevice("DesktopDevice", "DesktopDevice", Angle.fromDegrees(90));
+        controller.createDevice("HandheldDevice", "HandheldDevice", Angle.fromDegrees(100));
+        controller.createDevice("LaptopDevice", "LaptopDevice", Angle.fromDegrees(80));
+
+        assertListAreEqualIgnoringOrder(Arrays.asList("HandheldDevice", "LaptopDevice"),
+                controller.communicableEntitiesInRange("StandardSatellite"));
+        assertListAreEqualIgnoringOrder(Arrays.asList(), controller.communicableEntitiesInRange("DesktopDevice"));
+    }
+
     // My tests: File Transfers
     @Test
     public void testIncompleteTransfer() {

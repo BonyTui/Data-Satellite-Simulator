@@ -35,6 +35,9 @@ public class Entity {
         this.height = height;
         this.type = type;
 
+        ALLSATELLITES.clear();
+        ALLDEVICES.clear();
+
         ALLSATELLITES.add("StandardSatellite");
         ALLSATELLITES.add("RelaySatellite");
         ALLSATELLITES.add("TeleportingSatellite");

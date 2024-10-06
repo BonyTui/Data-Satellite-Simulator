@@ -11,7 +11,6 @@ public class RelaySatellite extends Satellite {
         setByteStorageLimit(0);
         setDownloadSpeed(Integer.MAX_VALUE);
         setUploadSpeed(Integer.MAX_VALUE);
-        getSupportedTypes().remove("DesktopDevice");
     }
 
     @Override
