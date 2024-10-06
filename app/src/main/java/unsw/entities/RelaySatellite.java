@@ -36,4 +36,8 @@ public class RelaySatellite extends Satellite {
 
         setPosition(newPosition);
     }
+
+    public void relay() {
+
+    }
 }

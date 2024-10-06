@@ -1,10 +1,22 @@
 package unsw.blackout;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import unsw.blackout.FileTransferException.*;
-import unsw.entities.*;
+import unsw.blackout.FileTransferException.VirtualFileAlreadyExistsException;
+import unsw.blackout.FileTransferException.VirtualFileNotFoundException;
+import unsw.entities.DesktopDevice;
+import unsw.entities.Device;
+import unsw.entities.ElephantSatellite;
+import unsw.entities.Entity;
+import unsw.entities.HandheldDevice;
+import unsw.entities.LaptopDevice;
+import unsw.entities.RelaySatellite;
+import unsw.entities.Satellite;
+import unsw.entities.StandardSatellite;
+import unsw.entities.TeleportingSatellite;
 import unsw.response.models.EntityInfoResponse;
 import unsw.response.models.FileInfoResponse;
 import unsw.utils.Angle;
@@ -210,25 +222,49 @@ public class BlackoutController {
     }
 
     public List<String> communicableEntitiesInRange(String id) {
+        return communicableEntitiesInRange(id, new HashSet<>());
+    }
+
+    private List<String> communicableEntitiesInRange(String id, Set<String> visitedEntities) {
         List<Entity> entityList = new ArrayList<>();
         entityList.addAll(satelliteList);
         entityList.addAll(deviceList);
 
+        List<Entity> communicableRelays = new ArrayList<>();
         List<String> communicableEntities = new ArrayList<>();
         Entity sourceEntity = findEntity(id);
 
+        // Mark the source entity as visited
+        visitedEntities.add(id);
+
         for (Entity destinationEntity : entityList) {
+            // Normal case
             double distance = MathsHelper.getDistance(sourceEntity.getHeight(), sourceEntity.getPosition(),
                     destinationEntity.getHeight(), destinationEntity.getPosition());
             if (distance <= sourceEntity.getMaxRange()
                     && MathsHelper.isVisible(sourceEntity.getHeight(), sourceEntity.getPosition(),
                             destinationEntity.getHeight(), destinationEntity.getPosition())
                     && !sourceEntity.getId().equals(destinationEntity.getId())
-                    && sourceEntity.getSupportedTypes().contains(destinationEntity.getType())) {
+                    && sourceEntity.getSupportedTypes().contains(destinationEntity.getType())
+                    && !visitedEntities.contains(destinationEntity.getId())) {
+
                 communicableEntities.add(destinationEntity.getId());
+
+                if (destinationEntity instanceof RelaySatellite) {
+                    communicableRelays.add(destinationEntity);
+                }
             }
         }
 
+        // Check for mutual connections via relay
+        for (Entity relaySatellite : communicableRelays) {
+            communicableEntities.addAll(communicableEntitiesInRange(relaySatellite.getId(), visitedEntities));
+        }
+
+        // Remove duplicates
+        Set<String> communicableEntitiesSet = new HashSet<>(communicableEntities);
+        communicableEntities.clear();
+        communicableEntities.addAll(communicableEntitiesSet);
         return communicableEntities;
     }
 
