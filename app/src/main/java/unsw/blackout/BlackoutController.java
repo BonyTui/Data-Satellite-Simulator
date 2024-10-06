@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import unsw.blackout.FileTransferException.VirtualFileAlreadyExistsException;
+import unsw.blackout.FileTransferException.VirtualFileNoBandwidthException;
+import unsw.blackout.FileTransferException.VirtualFileNoStorageSpaceException;
 import unsw.blackout.FileTransferException.VirtualFileNotFoundException;
 import unsw.entities.DesktopDevice;
 import unsw.entities.Device;
@@ -224,10 +226,13 @@ public class BlackoutController {
     }
 
     public List<String> communicableEntitiesInRange(String id) {
-        return communicableEntitiesInRange(id, new HashSet<>());
+        return communicableEntitiesInRange(id, findEntity(id), new HashSet<>());
+        // return communicableEntitiesInRange(id, findEntity(id), new HashSet<>());
+
     }
 
-    private List<String> communicableEntitiesInRange(String id, Set<String> visitedEntities) {
+    private List<String> communicableEntitiesInRange(String id, Entity originalSourceEntity,
+            Set<String> visitedEntities) {
         List<Entity> entityList = new ArrayList<>();
         entityList.addAll(satelliteList);
         entityList.addAll(deviceList);
@@ -247,7 +252,7 @@ public class BlackoutController {
                     && MathsHelper.isVisible(sourceEntity.getHeight(), sourceEntity.getPosition(),
                             destinationEntity.getHeight(), destinationEntity.getPosition())
                     && !sourceEntity.getId().equals(destinationEntity.getId())
-                    && sourceEntity.getSupportedTypes().contains(destinationEntity.getType())
+                    && originalSourceEntity.getSupportedTypes().contains(destinationEntity.getType())
                     && !visitedEntities.contains(destinationEntity.getId())) {
 
                 communicableEntities.add(destinationEntity.getId());
@@ -260,9 +265,8 @@ public class BlackoutController {
 
         // Check for mutual connections via relay
         for (Entity relaySatellite : communicableRelays) {
-            List<String> mutualConnections = communicableEntitiesInRange(relaySatellite.getId(), visitedEntities);
-            // mutualConnections = mutualConnections.stream()
-            //         .filter(entity -> sourceEntity.getSupportedTypes().contains(findEntity(id).getType())).toList();
+            List<String> mutualConnections = communicableEntitiesInRange(relaySatellite.getId(), originalSourceEntity,
+                    visitedEntities);
             communicableEntities.addAll(mutualConnections);
         }
 
@@ -289,15 +293,56 @@ public class BlackoutController {
         Entity destinationEntity = findEntity(toId);
         FileInfoResponse sourceFile = sourceEntity.getFiles().get(fileName);
 
+        // Can't find file to send from source
         if (sourceFile == null || !sourceFile.isFileComplete()) {
-            // Can't find file to send from source
             throw new VirtualFileNotFoundException(fileName);
-        } else if (destinationEntity.getFiles().get(fileName) != null) {
-            // File already exist at destination
+        }
+
+        // Check bandwidth
+        int downloadBandwidth = destinationEntity.getDownloadSpeed();
+        int numFilesDownloading = fileTransferList.stream()
+                .filter(file -> file.getDestinationEntity().equals(destinationEntity)).toList().size();
+
+        // Download bandwidth limit
+        if (numFilesDownloading + 1 > downloadBandwidth) {
+            throw new VirtualFileNoBandwidthException(toId);
+        }
+
+        int uploadBandwidth = sourceEntity.getUploadSpeed();
+        int numFilesUploading = fileTransferList.stream().filter(file -> file.getSourceEntity().equals(sourceEntity))
+                .toList().size();
+
+        // Upload bandwidth limit
+        if (numFilesUploading + 1 > uploadBandwidth) {
+            throw new VirtualFileNoBandwidthException(fromId);
+        }
+
+        // File already exist at destination
+        if (destinationEntity.getFiles().get(fileName) != null) {
             throw new VirtualFileAlreadyExistsException(fileName);
         }
 
-        // Check
+        // Check storage
+        int fileLimit = destinationEntity.getFileStorageLimit();
+        int fileUsage = destinationEntity.getFiles().size();
+        int newFileUsage = fileUsage + 1;
+        if (newFileUsage > fileLimit) {
+            // File limit reached
+            throw new VirtualFileNoStorageSpaceException("Max Files Reached");
+        }
+
+        int byteLimit = destinationEntity.getByteStorageLimit();
+        int byteUsage = destinationEntity.getFiles().values().stream().map(file -> file.getFileSize()).reduce(0,
+                (file1, file2) -> (file1 + file2));
+        int newByteUsage = byteUsage + sourceFile.getFileSize();
+        if (newByteUsage > byteLimit) {
+            // File limit reached
+            throw new VirtualFileNoStorageSpaceException("Max Storage Reached");
+        }
+
+        // Distribute bytes fairly
+        int uploadBandwidthDistribution = uploadBandwidth / (numFilesUploading + 1);
+        int downloadBandwidthDistribution = downloadBandwidth / (numFilesDownloading + 1);
 
         // Begin the transfer
         FileInfoResponse destinationFile = new FileInfoResponse(fileName, "", sourceFile.getFileSize(), false);

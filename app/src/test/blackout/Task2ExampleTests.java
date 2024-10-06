@@ -315,4 +315,125 @@ public class Task2ExampleTests {
                 controller.getInfo("DeviceB").getFiles().get("FileAlpha"));
 
     }
+
+    @Test
+    public void relayTransfer() {
+        controller.createDevice("DeviceA", "HandheldDevice", Angle.fromDegrees(90));
+        controller.createSatellite("Satellite1", "StandardSatellite", 10000 + RADIUS_OF_JUPITER,
+                Angle.fromDegrees(160));
+
+        assertListAreEqualIgnoringOrder(Arrays.asList(), controller.communicableEntitiesInRange("DeviceA"));
+
+        controller.createSatellite("Satellite2", "RelaySatellite", 15000 + RADIUS_OF_JUPITER, Angle.fromDegrees(120));
+
+        assertListAreEqualIgnoringOrder(Arrays.asList("Satellite1", "Satellite2"),
+                controller.communicableEntitiesInRange("DeviceA"));
+
+    }
+
+    @Test
+    public void relayBypassSupportedDevices() {
+
+        controller.createDevice("DeviceA", "DesktopDevice", Angle.fromDegrees(90));
+        controller.createSatellite("Satellite1", "StandardSatellite", 10000 + RADIUS_OF_JUPITER,
+                Angle.fromDegrees(160));
+
+        assertListAreEqualIgnoringOrder(Arrays.asList(), controller.communicableEntitiesInRange("DeviceA"));
+
+        controller.createSatellite("Satellite2", "RelaySatellite", 15000 + RADIUS_OF_JUPITER, Angle.fromDegrees(120));
+
+        assertListAreEqualIgnoringOrder(Arrays.asList("Satellite2"), controller.communicableEntitiesInRange("DeviceA"));
+
+    }
+
+    @Test
+    public void multipleRelayCommunication() {
+        controller.createDevice("DeviceA", "HandheldDevice", Angle.fromDegrees(90));
+        controller.createSatellite("goal", "StandardSatellite", 10000 + RADIUS_OF_JUPITER, Angle.fromDegrees(270));
+
+        assertListAreEqualIgnoringOrder(Arrays.asList(), controller.communicableEntitiesInRange("DeviceA"));
+
+        controller.createSatellite("relay1", "RelaySatellite", 15000 + RADIUS_OF_JUPITER, Angle.fromDegrees(120));
+
+        assertListAreEqualIgnoringOrder(Arrays.asList("relay1"), controller.communicableEntitiesInRange("DeviceA"));
+
+        controller.createSatellite("relay2", "RelaySatellite", 15000 + RADIUS_OF_JUPITER, Angle.fromDegrees(180));
+
+        assertListAreEqualIgnoringOrder(Arrays.asList("relay1", "relay2"),
+                controller.communicableEntitiesInRange("DeviceA"));
+
+        controller.createSatellite("relay3", "RelaySatellite", 15000 + RADIUS_OF_JUPITER, Angle.fromDegrees(225));
+
+        assertListAreEqualIgnoringOrder(Arrays.asList("relay1", "relay2", "relay3", "goal"),
+                controller.communicableEntitiesInRange("DeviceA"));
+
+    }
+
+    @Test
+    public void maxFileReached() {
+        controller.createDevice("DeviceA", "HandheldDevice", Angle.fromDegrees(90));
+        controller.createSatellite("Satellite1", "StandardSatellite", 20000 + RADIUS_OF_JUPITER, Angle.fromDegrees(90));
+
+        String msg = "E";
+        controller.addFileToDevice("DeviceA", "FileAlpha1", msg);
+        controller.addFileToDevice("DeviceA", "FileAlpha2", msg);
+        controller.addFileToDevice("DeviceA", "FileAlpha3", msg);
+        controller.addFileToDevice("DeviceA", "FileAlpha4", msg);
+
+        assertDoesNotThrow(() -> controller.sendFile("FileAlpha1", "DeviceA", "Satellite1"));
+        assertEquals(new FileInfoResponse("FileAlpha1", "", msg.length(), false),
+                controller.getInfo("Satellite1").getFiles().get("FileAlpha1"));
+
+        controller.simulate();
+
+        assertDoesNotThrow(() -> controller.sendFile("FileAlpha2", "DeviceA", "Satellite1"));
+        assertEquals(new FileInfoResponse("FileAlpha2", "", msg.length(), false),
+                controller.getInfo("Satellite1").getFiles().get("FileAlpha2"));
+
+        controller.simulate();
+
+        assertDoesNotThrow(() -> controller.sendFile("FileAlpha3", "DeviceA", "Satellite1"));
+        assertEquals(new FileInfoResponse("FileAlpha3", "", msg.length(), false),
+                controller.getInfo("Satellite1").getFiles().get("FileAlpha3"));
+
+        controller.simulate();
+
+        assertThrows(FileTransferException.VirtualFileNoStorageSpaceException.class,
+                () -> controller.sendFile("FileAlpha4", "DeviceA", "Satellite1"));
+
+    }
+
+    @Test
+    public void maxByteReached() {
+        controller.createDevice("DeviceA", "HandheldDevice", Angle.fromDegrees(90));
+        controller.createSatellite("Satellite1", "StandardSatellite", 20000 + RADIUS_OF_JUPITER, Angle.fromDegrees(90));
+
+        String msg = "oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo";
+        controller.addFileToDevice("DeviceA", "80bytes", msg);
+        controller.addFileToDevice("DeviceA", "1byte", "e");
+
+        assertDoesNotThrow(() -> controller.sendFile("80bytes", "DeviceA", "Satellite1"));
+        assertEquals(new FileInfoResponse("80bytes", "", msg.length(), false),
+                controller.getInfo("Satellite1").getFiles().get("80bytes"));
+
+        assertThrows(FileTransferException.VirtualFileNoStorageSpaceException.class,
+                () -> controller.sendFile("1byte", "DeviceA", "Satellite1"));
+
+    }
+
+    @Test
+    public void bandwidthLimit() {
+        controller.createDevice("DeviceA", "HandheldDevice", Angle.fromDegrees(90));
+        controller.createDevice("DeviceB", "HandheldDevice", Angle.fromDegrees(91));
+        controller.createSatellite("Satellite1", "StandardSatellite", 20000 + RADIUS_OF_JUPITER, Angle.fromDegrees(90));
+
+        String msg = "123";
+        controller.addFileToDevice("DeviceA", "file1", msg);
+        controller.addFileToDevice("DeviceB", "file2", "e");
+
+        assertDoesNotThrow(() -> controller.sendFile("file1", "DeviceA", "Satellite1"));
+        assertThrows(FileTransferException.VirtualFileNoBandwidthException.class,
+                () -> controller.sendFile("file2", "DeviceB", "Satellite1"));
+
+    }
 }
