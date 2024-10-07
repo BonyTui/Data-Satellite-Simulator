@@ -8,6 +8,10 @@ import unsw.blackout.BlackoutController;
 import unsw.blackout.FileTransfer;
 
 public class TeleportingSatellite extends Satellite {
+    private static final int TELEPORT_IN_ANGLE = 180;
+    private static final int TELEPORT_OUT_ANGLE = 360;
+    private static final String REMOVE_CHAR = "t";
+
     public TeleportingSatellite(String satelliteId, String type, double height, Angle position) {
         super(satelliteId, type, height, position);
         setDirection(-1);
@@ -30,14 +34,14 @@ public class TeleportingSatellite extends Satellite {
 
         if (getDirection() == 1) {
             // Moving Clockwise
-            if (currentPositionDegrees >= 180 && currentPositionDegrees <= 180 + offset) {
+            if (currentPositionDegrees >= TELEPORT_IN_ANGLE && currentPositionDegrees <= TELEPORT_IN_ANGLE + offset) {
                 newPosition = teleport();
             } else {
                 newPosition = currentPosition.subtract(Angle.fromRadians(this.getAngularVelocity()));
             }
         } else {
             // Moving Anti-Clockwise
-            if (currentPositionDegrees <= 180 && currentPositionDegrees >= 180 - offset) {
+            if (currentPositionDegrees <= TELEPORT_IN_ANGLE && currentPositionDegrees >= TELEPORT_IN_ANGLE - offset) {
                 newPosition = teleport();
             } else {
                 newPosition = currentPosition.add(Angle.fromRadians(this.getAngularVelocity()));
@@ -51,6 +55,7 @@ public class TeleportingSatellite extends Satellite {
         // This method violates Law of Demeter, but is necessary to access file that exists in
         // so many locations: destination, source, transferList
 
+        // Reverse Direction
         setDirection(getDirection() * -1);
 
         // Get all the file transfers going from devices to this satellite
@@ -66,7 +71,7 @@ public class TeleportingSatellite extends Satellite {
             for (FileTransfer file : deviceToSatelliteTransfers) {
                 String fileName = file.getFileName();
                 String fileContent = file.getFileContent();
-                String modifiedContent = fileContent.replace("t", "");
+                String modifiedContent = fileContent.replace(REMOVE_CHAR, "");
 
                 FileInfoResponse updatedFile = new FileInfoResponse(fileName, modifiedContent, modifiedContent.length(),
                         true);
@@ -87,7 +92,7 @@ public class TeleportingSatellite extends Satellite {
                 String fileContent = file.getFileContent();
                 String downloadedContent = fileContent.substring(0, file.getByteTransferred());
                 String remainingContent = fileContent.substring(file.getByteTransferred() - 1, fileContent.length())
-                        .replace("t", "");
+                        .replace(REMOVE_CHAR, "");
                 String modifiedContent = downloadedContent + remainingContent;
 
                 FileInfoResponse updatedFile = new FileInfoResponse(fileName, modifiedContent, modifiedContent.length(),
@@ -96,6 +101,6 @@ public class TeleportingSatellite extends Satellite {
             }
         }
 
-        return Angle.fromDegrees(360);
+        return Angle.fromDegrees(TELEPORT_OUT_ANGLE);
     }
 }

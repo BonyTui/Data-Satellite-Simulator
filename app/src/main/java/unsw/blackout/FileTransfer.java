@@ -26,6 +26,10 @@ public class FileTransfer {
         this.byteTransferred = byteTransferred;
     }
 
+    public Map<String, FileInfoResponse> getSourceFileStorage() {
+        return sourceFileStorage;
+    }
+
     public Entity getSourceEntity() {
         return sourceEntity;
     }

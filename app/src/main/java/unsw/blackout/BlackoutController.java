@@ -40,19 +40,12 @@ public class BlackoutController {
     }
 
     private Entity findEntity(String id) {
-        for (Device device : deviceList) {
-            if (device.getId().equals(id)) {
-                return device;
-            }
+        Entity entity = findDevice(id);
+        if (entity != null) {
+            return entity;
+        } else {
+            return findSatellite(id);
         }
-
-        for (Satellite satellite : satelliteList) {
-            if (satellite.getId().equals(id)) {
-                return satellite;
-            }
-        }
-
-        return null;
     }
 
     private Device findDevice(String deviceId) {
@@ -162,27 +155,45 @@ public class BlackoutController {
         }
     }
 
-    public void transferFile() {
+    private void transferFile() {
+        // Violates Law of Demeter in order to send files, Blackoutcontroller needs to access File Transfer
+        // in order to access the Source and Destination
         List<FileTransfer> completeTransfer = new ArrayList<FileTransfer>();
         for (FileTransfer fileTransfer : fileTransferList) {
             Entity sourceEntity = fileTransfer.getSourceEntity();
             Entity destinationEntity = fileTransfer.getDestinationEntity();
             String fileName = fileTransfer.getFileName();
             if (!communicable(sourceEntity.getId(), destinationEntity.getId())) {
-                destinationEntity.getFiles().entrySet().removeIf(
-                        entry -> !entry.getValue().isFileComplete() && entry.getValue().getFilename().equals(fileName));
+                if (!(destinationEntity instanceof ElephantSatellite)) {
+                    // If not ElephantSatellite, file is transient and will resume downloading when back in range. Else, delete.
+                    destinationEntity.getFiles().entrySet().removeIf(entry -> !entry.getValue().isFileComplete()
+                            && entry.getValue().getFilename().equals(fileName));
+                }
                 fileTransfer = null;
                 continue;
             }
 
+            // Distribute bytes fairly
+            int numFilesUploading = fileTransferList.stream()
+                    .filter(file -> file.getSourceEntity().equals(sourceEntity)).toList().size();
+            int numFilesDownloading = fileTransferList.stream()
+                    .filter(file -> file.getDestinationEntity().equals(destinationEntity)).toList().size();
+
+            if (destinationEntity instanceof ElephantSatellite) {
+                int numTransientFiles = fileTransferList.stream()
+                        .filter(file -> !communicable(sourceEntity.getId(), destinationEntity.getId())).toList().size();
+                numFilesDownloading -= numTransientFiles;
+            }
+            int uploadBandwidthDistribution = sourceEntity.getUploadSpeed() / (numFilesUploading);
+            int downloadBandwidthDistribution = destinationEntity.getDownloadSpeed() / (numFilesDownloading);
             int numByteTransferred = 0;
             if (sourceEntity instanceof Device) {
                 // Device to Satellite
-                numByteTransferred = fileTransfer.getByteTransferred() + destinationEntity.getDownloadSpeed();
+                numByteTransferred = fileTransfer.getByteTransferred() + downloadBandwidthDistribution;
             } else if (sourceEntity instanceof Satellite) {
                 // Satellite to Device/Satellite
                 numByteTransferred = fileTransfer.getByteTransferred()
-                        + Math.min(sourceEntity.getUploadSpeed(), destinationEntity.getDownloadSpeed());
+                        + Math.min(uploadBandwidthDistribution, downloadBandwidthDistribution);
             }
 
             String sourceData = fileTransfer.getFileContent();
@@ -227,8 +238,6 @@ public class BlackoutController {
 
     public List<String> communicableEntitiesInRange(String id) {
         return communicableEntitiesInRange(id, findEntity(id), new HashSet<>());
-        // return communicableEntitiesInRange(id, findEntity(id), new HashSet<>());
-
     }
 
     private List<String> communicableEntitiesInRange(String id, Entity originalSourceEntity,
@@ -240,6 +249,9 @@ public class BlackoutController {
         List<Entity> communicableRelays = new ArrayList<>();
         List<String> communicableEntities = new ArrayList<>();
         Entity sourceEntity = findEntity(id);
+        if (sourceEntity == null) {
+            return communicableEntities;
+        }
 
         // Mark the source entity as visited
         visitedEntities.add(id);
@@ -339,10 +351,6 @@ public class BlackoutController {
             // File limit reached
             throw new VirtualFileNoStorageSpaceException("Max Storage Reached");
         }
-
-        // Distribute bytes fairly
-        int uploadBandwidthDistribution = uploadBandwidth / (numFilesUploading + 1);
-        int downloadBandwidthDistribution = downloadBandwidth / (numFilesDownloading + 1);
 
         // Begin the transfer
         FileInfoResponse destinationFile = new FileInfoResponse(fileName, "", sourceFile.getFileSize(), false);

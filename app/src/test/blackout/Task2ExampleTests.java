@@ -406,15 +406,17 @@ public class Task2ExampleTests {
     @Test
     public void maxByteReached() {
         controller.createDevice("DeviceA", "HandheldDevice", Angle.fromDegrees(90));
-        controller.createSatellite("Satellite1", "StandardSatellite", 20000 + RADIUS_OF_JUPITER, Angle.fromDegrees(90));
+        controller.createSatellite("Satellite1", "TeleportingSatellite", 20000 + RADIUS_OF_JUPITER,
+                Angle.fromDegrees(90));
 
-        String msg = "oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo";
-        controller.addFileToDevice("DeviceA", "80bytes", msg);
+        String msg = "oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo"
+                + "oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo";
+        controller.addFileToDevice("DeviceA", "200bytes", msg);
         controller.addFileToDevice("DeviceA", "1byte", "e");
 
-        assertDoesNotThrow(() -> controller.sendFile("80bytes", "DeviceA", "Satellite1"));
-        assertEquals(new FileInfoResponse("80bytes", "", msg.length(), false),
-                controller.getInfo("Satellite1").getFiles().get("80bytes"));
+        assertDoesNotThrow(() -> controller.sendFile("200bytes", "DeviceA", "Satellite1"));
+        assertEquals(new FileInfoResponse("200bytes", "", msg.length(), false),
+                controller.getInfo("Satellite1").getFiles().get("200bytes"));
 
         assertThrows(FileTransferException.VirtualFileNoStorageSpaceException.class,
                 () -> controller.sendFile("1byte", "DeviceA", "Satellite1"));
@@ -434,6 +436,75 @@ public class Task2ExampleTests {
         assertDoesNotThrow(() -> controller.sendFile("file1", "DeviceA", "Satellite1"));
         assertThrows(FileTransferException.VirtualFileNoBandwidthException.class,
                 () -> controller.sendFile("file2", "DeviceB", "Satellite1"));
+
+    }
+
+    @Test
+    public void bandwidthSharing() {
+        controller.createDevice("DeviceA", "HandheldDevice", Angle.fromDegrees(90));
+        controller.createDevice("DeviceB", "HandheldDevice", Angle.fromDegrees(91));
+        controller.createDevice("DeviceC", "HandheldDevice", Angle.fromDegrees(92));
+        controller.createDevice("DeviceD", "HandheldDevice", Angle.fromDegrees(89));
+        controller.createSatellite("Satellite1", "TeleportingSatellite", 20000 + RADIUS_OF_JUPITER,
+                Angle.fromDegrees(90));
+
+        String msg = "1234567890";
+        controller.addFileToDevice("DeviceA", "file1", msg);
+
+        assertDoesNotThrow(() -> controller.sendFile("file1", "DeviceA", "Satellite1"));
+        controller.simulate();
+
+        assertDoesNotThrow(() -> controller.sendFile("file1", "Satellite1", "DeviceB"));
+
+        assertDoesNotThrow(() -> controller.sendFile("file1", "Satellite1", "DeviceC"));
+
+        assertDoesNotThrow(() -> controller.sendFile("file1", "Satellite1", "DeviceD"));
+
+        controller.simulate();
+
+        // Upload speed (10) / numDevices (3) = 3 bytes sent
+
+        assertEquals(new FileInfoResponse("file1", "123", msg.length(), false),
+                controller.getInfo("DeviceB").getFiles().get("file1"));
+
+        assertEquals(new FileInfoResponse("file1", "123", msg.length(), false),
+                controller.getInfo("DeviceC").getFiles().get("file1"));
+
+        assertEquals(new FileInfoResponse("file1", "123", msg.length(), false),
+                controller.getInfo("DeviceD").getFiles().get("file1"));
+
+        controller.simulate();
+
+        assertEquals(new FileInfoResponse("file1", "123456", msg.length(), false),
+                controller.getInfo("DeviceB").getFiles().get("file1"));
+
+        assertEquals(new FileInfoResponse("file1", "123456", msg.length(), false),
+                controller.getInfo("DeviceC").getFiles().get("file1"));
+
+        assertEquals(new FileInfoResponse("file1", "123456", msg.length(), false),
+                controller.getInfo("DeviceD").getFiles().get("file1"));
+
+        controller.simulate();
+
+        assertEquals(new FileInfoResponse("file1", "123456789", msg.length(), false),
+                controller.getInfo("DeviceB").getFiles().get("file1"));
+
+        assertEquals(new FileInfoResponse("file1", "123456789", msg.length(), false),
+                controller.getInfo("DeviceC").getFiles().get("file1"));
+
+        assertEquals(new FileInfoResponse("file1", "123456789", msg.length(), false),
+                controller.getInfo("DeviceD").getFiles().get("file1"));
+
+        controller.simulate();
+
+        assertEquals(new FileInfoResponse("file1", msg, msg.length(), true),
+                controller.getInfo("DeviceB").getFiles().get("file1"));
+
+        assertEquals(new FileInfoResponse("file1", msg, msg.length(), true),
+                controller.getInfo("DeviceC").getFiles().get("file1"));
+
+        assertEquals(new FileInfoResponse("file1", msg, msg.length(), true),
+                controller.getInfo("DeviceD").getFiles().get("file1"));
 
     }
 }
