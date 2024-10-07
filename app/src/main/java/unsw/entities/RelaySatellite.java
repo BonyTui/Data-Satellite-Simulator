@@ -2,7 +2,7 @@ package unsw.entities;
 
 import unsw.utils.Angle;
 
-public class RelaySatellite extends Satellite {
+public class RelaySatellite extends Satellite implements Movable {
     private static final int INTERVAL_POINT_1 = 140;
     private static final int INTERVAL_POINT_2 = 190;
     private static final int INTERVAL_POINT_3 = 360;

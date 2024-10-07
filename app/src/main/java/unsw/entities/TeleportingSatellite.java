@@ -7,7 +7,7 @@ import java.util.List;
 import unsw.blackout.BlackoutController;
 import unsw.blackout.FileTransfer;
 
-public class TeleportingSatellite extends Satellite {
+public class TeleportingSatellite extends Satellite implements Movable {
     private static final int TELEPORT_IN_ANGLE = 180;
     private static final int TELEPORT_OUT_ANGLE = 360;
     private static final String REMOVE_CHAR = "t";
@@ -51,7 +51,7 @@ public class TeleportingSatellite extends Satellite {
         setPosition(newPosition);
     }
 
-    public Angle teleport() {
+    private Angle teleport() {
         // This method violates Law of Demeter, but is necessary to access file that exists in
         // so many locations: destination, source, transferList
 

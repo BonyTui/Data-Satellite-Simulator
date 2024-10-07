@@ -8,7 +8,7 @@ import java.util.Map;
 import unsw.response.models.FileInfoResponse;
 import unsw.utils.Angle;
 
-public class Entity {
+public abstract class Entity implements Movable {
     private String id;
     private Angle position;
     private double height;
